@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V1.1.2 - signature refinement -->
+<!-- Through Chun Chun's Lens V1.1.3 - delicate SVG signature -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -539,25 +539,37 @@
       border-top: 1px solid rgba(255, 255, 255, 0.26);
     }
 
-    .signature-title {
-      margin: 0;
+    .signature-logo {
+      display: block;
+      width: min(100%, 350px);
+      height: auto;
+      overflow: visible;
+      color: rgba(255, 255, 255, 0.72);
+      filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.34));
+      transform: rotate(-0.7deg);
+      transform-origin: left center;
+    }
 
-      color: rgba(255, 255, 255, 0.88);
-
+    .signature-logo-text {
+      fill: currentColor;
       font-family:
         "Parisienne",
         "Snell Roundhand",
         "Segoe Script",
         "Apple Chancery",
         cursive;
-
-      font-size: clamp(24px, 3vw, 30px);
+      font-size: 36px;
       font-weight: 400;
-      line-height: 1.05;
-      letter-spacing: 0;
+      letter-spacing: -0.35px;
+    }
 
-      transform: rotate(-1deg);
-      transform-origin: left center;
+    .signature-logo-heart {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
     }
 
     .signature-name {
@@ -664,8 +676,12 @@
         font-size: 12px;
       }
 
-      .signature-title {
-        font-size: clamp(26px, 8vw, 31px);
+      .signature-logo {
+        width: min(100%, 315px);
+      }
+
+      .signature-logo-text {
+        font-size: 34px;
       }
 
       .signature-name {
@@ -862,9 +878,28 @@
             </div>
 
             <div class="signature">
-              <p class="signature-title">
-                Through Chun Chun's Lens ♡
-              </p>
+              <svg
+                class="signature-logo"
+                viewBox="0 0 430 52"
+                role="img"
+                aria-label="Through Chun Chun's Lens"
+                preserveAspectRatio="xMinYMid meet"
+              >
+                <text
+                  class="signature-logo-text"
+                  x="2"
+                  y="37"
+                >Through Chun Chun's Lens</text>
+
+                <path
+                  class="signature-logo-heart"
+                  d="M398 16
+                     C394 10, 384 12, 384 20
+                     C384 27, 393 33, 398 38
+                     C403 33, 412 27, 412 20
+                     C412 12, 402 10, 398 16 Z"
+                />
+              </svg>
               <p class="signature-name">— Chun Chun</p>
             </div>
           </aside>
