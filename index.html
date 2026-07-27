@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V1.2.0 - full EXIF reader and adaptive info panel -->
+<!-- Through Chun Chun's Lens V1.3.0 - refined EXIF card -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -468,8 +468,8 @@
       z-index: 5;
 
       width: fit-content;
-      min-width: 180px;
-      max-width: calc(100% - 52px);
+      min-width: 190px;
+      max-width: min(360px, calc(100% - 52px));
       padding: 16px 20px 18px;
 
       border: 1px solid rgba(255, 255, 255, 0.26);
@@ -557,9 +557,9 @@
     }
 
     .signature {
-      margin-top: 13px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.30);
     }
 
 
@@ -659,8 +659,8 @@
         bottom: 16px;
 
         width: fit-content;
-        min-width: 170px;
-        max-width: calc(100% - 32px);
+        min-width: 180px;
+        max-width: min(340px, calc(100% - 32px));
         padding: 15px 16px 16px;
 
         border-radius: 18px;
@@ -684,8 +684,8 @@
     @media (max-width: 420px) {
       .info-panel {
         width: fit-content;
-        min-width: 160px;
-        max-width: calc(100% - 24px);
+        min-width: 170px;
+        max-width: min(320px, calc(100% - 24px));
         left: 12px;
         bottom: 12px;
       }
@@ -984,7 +984,7 @@
 
       photoPreview.src = currentObjectUrl;
 
-      updateBasicLine(formatFileType(file), null);
+      updateBasicLine(null);
 
       uploadView.style.display = "none";
       photoView.classList.add("visible");
@@ -1037,7 +1037,7 @@
           metadata?.ModifyDate;
 
         if (exifDate instanceof Date && !Number.isNaN(exifDate.getTime())) {
-          updateBasicLine(formatFileType(file), exifDate);
+          updateBasicLine(exifDate);
         }
 
         const camera = formatCameraName(
@@ -1045,10 +1045,11 @@
           metadata?.Model
         );
 
-        const lens =
-          cleanText(metadata?.LensModel) ||
-          cleanText(metadata?.Lens) ||
-          formatLensInfo(metadata?.LensInfo);
+        const lens = formatLensName(
+          metadata?.LensModel ||
+          metadata?.Lens ||
+          formatLensInfo(metadata?.LensInfo)
+        );
 
         const aperture = formatAperture(
           metadata?.FNumber ?? metadata?.ApertureValue
@@ -1100,8 +1101,8 @@
       element.classList.toggle("hidden", !cleanValue);
     }
 
-    function updateBasicLine(type, date) {
-      const parts = [type];
+    function updateBasicLine(date) {
+      const parts = [];
 
       if (date instanceof Date && !Number.isNaN(date.getTime())) {
         parts.push(
@@ -1121,7 +1122,8 @@
         );
       }
 
-      basicLine.textContent = parts.filter(Boolean).join(" • ") || "—";
+      basicLine.textContent = parts.join(" • ");
+      basicLine.classList.toggle("hidden", parts.length === 0);
     }
 
     function formatCameraName(make, model) {
@@ -1180,6 +1182,25 @@
       return cleanText(lensInfo);
     }
 
+    function formatLensName(value) {
+      let lens = cleanText(value);
+
+      if (!lens) {
+        return "";
+      }
+
+      return lens
+        .replace(/^Canon\s+/i, "")
+        .replace(/RF-S\s*(\d)/i, "RF-S $1")
+        .replace(/RF\s*(\d)/i, "RF $1")
+        .replace(/EF-S\s*(\d)/i, "EF-S $1")
+        .replace(/EF\s*(\d)/i, "EF $1")
+        .replace(/\s+F\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?.*$/i, "")
+        .replace(/\s+f\/\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?.*$/i, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    }
+
     function formatAperture(value) {
       const number = Number(value);
 
@@ -1187,7 +1208,7 @@
         return "";
       }
 
-      return `f/${formatNumber(number)}`;
+      return `F${number.toFixed(1)}`;
     }
 
     function formatShutter(value) {
