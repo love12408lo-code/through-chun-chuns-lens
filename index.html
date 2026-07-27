@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 Through Chun Chun's Lens
-Version 1.0
+Version 1.1
 
 Designed with care by Chun Chun & ChatGPT
 2026
@@ -835,6 +835,29 @@ Designed with care by Chun Chun & ChatGPT
 
                 <span class="button-label">重新選擇</span>
               </button>
+
+              <button
+                class="toolbar-button"
+                id="resetButton"
+                type="button"
+                aria-label="重新開始並回到首頁"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 11.5 12 4l9 7.5"></path>
+                  <path d="M5.5 10.5V20h13v-9.5"></path>
+                  <path d="M9.5 20v-6h5v6"></path>
+                </svg>
+
+                <span class="button-label">重新開始</span>
+              </button>
             </div>
 
             <div class="toolbar-group">
@@ -927,6 +950,7 @@ Designed with care by Chun Chun & ChatGPT
     const fileInput = document.getElementById("fileInput");
     const chooseButton = document.getElementById("chooseButton");
     const changeButton = document.getElementById("changeButton");
+    const resetButton = document.getElementById("resetButton");
     const downloadButton = document.getElementById("downloadButton");
     const toggleInfoButton = document.getElementById("toggleInfoButton");
     const toggleInfoLabel = document.getElementById("toggleInfoLabel");
@@ -950,6 +974,7 @@ Designed with care by Chun Chun & ChatGPT
 
     chooseButton.addEventListener("click", openFilePicker);
     changeButton.addEventListener("click", openFilePicker);
+    resetButton.addEventListener("click", resetToHome);
     downloadButton.addEventListener("click", downloadCompletedPhoto);
     toggleInfoButton.addEventListener("click", toggleInfoPanel);
     fileInput.addEventListener("change", handleFileSelection);
@@ -957,6 +982,31 @@ Designed with care by Chun Chun & ChatGPT
     function openFilePicker() {
       fileInput.value = "";
       fileInput.click();
+    }
+
+    function resetToHome() {
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+      }
+
+      currentFile = null;
+      currentObjectUrl = null;
+      fileInput.value = "";
+      photoPreview.removeAttribute("src");
+
+      resetExifDisplay();
+      updateBasicLine(null);
+      showInfoPanel();
+      resetInfoPanelPosition();
+
+      errorMessage.textContent = "";
+      photoView.classList.remove("visible");
+      uploadView.style.display = "grid";
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
 
     function handleFileSelection(event) {
