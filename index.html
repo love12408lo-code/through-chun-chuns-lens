@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V4.1 Material Experience & Home Screen Guide Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V4.2 Export Alignment & Guide Fit Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -2059,7 +2059,7 @@
 
 
     /* =========================
-       V4.1 — Softer Typography & Card Polish
+       V4.2 — Softer Typography & Card Polish
        ========================= */
 
     .hero-title,
@@ -2282,7 +2282,7 @@
 
 
     /* =========================
-       V4.1 — Material Experience
+       V4.2 — Material Experience
        ========================= */
 
     .material-swatches {
@@ -2384,7 +2384,7 @@
     }
 
     /* =========================
-       V4.1 — Add to Home Screen
+       V4.2 — Add to Home Screen
        ========================= */
 
     .install-section {
@@ -2449,7 +2449,9 @@
     }
 
     .install-guide {
-      width: 100%;
+      width: min(960px, 100%);
+      height: auto;
+      margin: 0 auto;
       display: block;
       border: 1px solid rgba(255,255,255,.88);
       border-radius: 28px;
@@ -3627,8 +3629,8 @@
       const panelTop = (panelRect.top - stageRect.top) * exportScale;
       const panelWidth = panelRect.width * exportScale;
       const panelHeight = panelRect.height * exportScale;
-      const panelVisualScale = infoScale;
-      const radius = 18 * exportScale * panelVisualScale;
+      const radius = 18 * exportScale;
+
       const themes = {
         default: ["rgba(0,0,0,.14)", "rgba(255,255,255,.30)"],
         titanium: ["rgba(94,105,109,.58)", "rgba(231,238,239,.58)"],
@@ -3638,29 +3640,83 @@
         forest: ["rgba(19,78,55,.68)", "rgba(164,207,184,.46)"],
         gold: ["rgba(122,79,34,.68)", "rgba(250,218,162,.54)"]
       };
-      const [fill, border] = themes[currentMaterial] || themes.default;
-      context.save();
-      context.shadowColor = "rgba(0,0,0,.24)"; context.shadowBlur = 18 * exportScale; context.shadowOffsetY = 8 * exportScale;
-      roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, radius);
-      context.fillStyle = fill; context.fill();
-      context.shadowColor = "transparent"; context.lineWidth = Math.max(1, 1.2 * exportScale); context.strokeStyle = border; context.stroke();
 
-      const paddingX = 20 * exportScale * panelVisualScale; let currentY = panelTop + 22 * exportScale * panelVisualScale; const contentWidth = panelWidth - paddingX * 2;
-      context.fillStyle = "rgba(255,255,255,.48)";
-      roundedRect(context, panelLeft + panelWidth / 2 - 19 * exportScale * panelVisualScale, currentY, 38 * exportScale * panelVisualScale, 4 * exportScale * panelVisualScale, 2 * exportScale * panelVisualScale); context.fill();
-      currentY += 28 * exportScale * panelVisualScale;
-      const cameraText = cameraLine.textContent.trim(); const basicText = basicLine.textContent.trim(); const settingsText = settingsLine.textContent.trim();
-      if (cameraText) {
-        context.font = `650 ${15 * exportScale * panelVisualScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.99)";
-        currentY = drawWrappedText(context, cameraText, panelLeft + paddingX, currentY, contentWidth, 22 * exportScale * panelVisualScale); currentY += 7 * exportScale * panelVisualScale;
+      const [fill, border] = themes[currentMaterial] || themes.default;
+
+      context.save();
+      context.shadowColor = "rgba(0,0,0,.24)";
+      context.shadowBlur = 18 * exportScale;
+      context.shadowOffsetY = 8 * exportScale;
+
+      roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, radius);
+      context.fillStyle = fill;
+      context.fill();
+
+      context.shadowColor = "transparent";
+      context.lineWidth = Math.max(1, 1.2 * exportScale);
+      context.strokeStyle = border;
+      context.stroke();
+
+      // Draw each element from its real on-screen position.
+      // This avoids applying the panel scale twice during export.
+      const drawElementText = (element, weight, color, fallbackSize, lineHeightMultiplier = 1.45) => {
+        if (!element || element.classList.contains("hidden")) return;
+
+        const text = element.textContent.trim();
+        if (!text) return;
+
+        const rect = element.getBoundingClientRect();
+        const computed = window.getComputedStyle(element);
+        const screenFontSize = parseFloat(computed.fontSize) || fallbackSize;
+        const fontSize = screenFontSize * exportScale;
+        const lineHeight = fontSize * lineHeightMultiplier;
+        const x = (rect.left - stageRect.left) * exportScale;
+        const y = (rect.top - stageRect.top) * exportScale + fontSize;
+        const maxWidth = Math.max(10, rect.width * exportScale);
+
+        context.font = `${weight} ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+        context.fillStyle = color;
+        drawWrappedText(context, text, x, y, maxWidth, lineHeight);
+      };
+
+      // Drag handle
+      const handleRect = infoPanel.querySelector(".drag-handle")?.getBoundingClientRect();
+      if (handleRect) {
+        context.fillStyle = "rgba(255,255,255,.48)";
+        roundedRect(
+          context,
+          (handleRect.left - stageRect.left) * exportScale,
+          (handleRect.top - stageRect.top) * exportScale,
+          handleRect.width * exportScale,
+          handleRect.height * exportScale,
+          2 * exportScale
+        );
+        context.fill();
       }
-      context.font = `500 ${13 * exportScale * panelVisualScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.84)";
-      if (basicText) { currentY = drawWrappedText(context, basicText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale * panelVisualScale); currentY += 7 * exportScale * panelVisualScale; }
-      if (settingsText) { currentY = drawWrappedText(context, settingsText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale * panelVisualScale); currentY += 13 * exportScale * panelVisualScale; }
-      context.beginPath(); context.moveTo(panelLeft + paddingX, currentY); context.lineTo(panelLeft + panelWidth - paddingX, currentY);
-      context.lineWidth = Math.max(1, exportScale * panelVisualScale); context.strokeStyle = "rgba(255,255,255,.22)"; context.stroke(); currentY += 18 * exportScale * panelVisualScale;
-      context.font = `450 ${11 * exportScale * panelVisualScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.72)";
-      context.fillText(signatureName.textContent.trim(), panelLeft + paddingX, currentY);
+
+      drawElementText(cameraLine, 650, "rgba(255,255,255,.99)", 15, 1.45);
+      drawElementText(basicLine, 500, "rgba(255,255,255,.84)", 13, 1.5);
+      drawElementText(settingsLine, 500, "rgba(255,255,255,.84)", 13, 1.5);
+
+      // Divider line follows the actual signature container position.
+      const signatureBox = infoPanel.querySelector(".signature");
+      if (signatureBox) {
+        const sigBoxRect = signatureBox.getBoundingClientRect();
+        const sigStyle = window.getComputedStyle(signatureBox);
+        const borderTop = parseFloat(sigStyle.borderTopWidth) || 1;
+        const lineY = (sigBoxRect.top - stageRect.top) * exportScale;
+
+        context.beginPath();
+        context.moveTo((sigBoxRect.left - stageRect.left) * exportScale, lineY);
+        context.lineTo((sigBoxRect.right - stageRect.left) * exportScale, lineY);
+        context.lineWidth = Math.max(1, borderTop * exportScale);
+        context.strokeStyle = "rgba(255,255,255,.22)";
+        context.stroke();
+      }
+
+      // Signature now uses its exact visible position instead of a calculated flow position.
+      drawElementText(signatureName, 450, "rgba(255,255,255,.72)", 11, 1.4);
+
       context.restore();
     }
 
