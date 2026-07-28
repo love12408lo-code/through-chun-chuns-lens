@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V3.2 - complete photography landing page, social links and full EXIF studio -->
+<!-- Through Chun Chun's Lens V3.2.1 - complete photography landing page, social links and full EXIF studio -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1891,7 +1891,7 @@
                 class="toolbar-button"
                 id="downloadButton"
                 type="button"
-                aria-label="下載原始照片"
+                aria-label="下載含資訊框的照片"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -1907,7 +1907,7 @@
                   <path d="M5 21h14"></path>
                 </svg>
 
-                <span class="button-label">下載原圖</span>
+                <span class="button-label">下載成品</span>
               </button>
             </div>
           </div>
@@ -2426,20 +2426,230 @@
       toggleInfoButton.setAttribute("aria-label", "隱藏照片資訊");
     }
 
-    function downloadOriginalPhoto() {
-      if (!currentFile || !currentObjectUrl) {
+    async function downloadOriginalPhoto() {
+      if (!currentFile || !currentObjectUrl || !photoPreview.complete) {
         return;
       }
 
-      const downloadLink = document.createElement("a");
+      try {
+        const naturalWidth = photoPreview.naturalWidth;
+        const naturalHeight = photoPreview.naturalHeight;
 
-      downloadLink.href = currentObjectUrl;
-      downloadLink.download = currentFile.name || "photograph";
-      downloadLink.style.display = "none";
+        if (!naturalWidth || !naturalHeight) {
+          throw new Error("Image dimensions unavailable");
+        }
 
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      downloadLink.remove();
+        const canvas = document.createElement("canvas");
+        canvas.width = naturalWidth;
+        canvas.height = naturalHeight;
+
+        const context = canvas.getContext("2d");
+
+        if (!context) {
+          throw new Error("Canvas unavailable");
+        }
+
+        context.drawImage(photoPreview, 0, 0, naturalWidth, naturalHeight);
+
+        if (infoVisible && !infoPanel.classList.contains("hidden")) {
+          drawInfoPanelOnCanvas(context, naturalWidth, naturalHeight);
+        }
+
+        const mimeType =
+          currentFile.type === "image/png"
+            ? "image/png"
+            : "image/jpeg";
+
+        const extension = mimeType === "image/png" ? "png" : "jpg";
+        const originalName =
+          currentFile.name.replace(/\.[^.]+$/, "") || "photograph";
+
+        const blob = await new Promise((resolve, reject) => {
+          canvas.toBlob(
+            (result) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(new Error("Export failed"));
+              }
+            },
+            mimeType,
+            0.95
+          );
+        });
+
+        const exportUrl = URL.createObjectURL(blob);
+        const downloadLink = document.createElement("a");
+
+        downloadLink.href = exportUrl;
+        downloadLink.download = `${originalName}-with-info.${extension}`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+
+        window.setTimeout(() => {
+          URL.revokeObjectURL(exportUrl);
+        }, 1000);
+      } catch (error) {
+        errorMessage.textContent =
+          "目前無法產生含資訊框的照片，請重新選擇照片後再試一次。";
+      }
+    }
+
+    function drawInfoPanelOnCanvas(context, naturalWidth, naturalHeight) {
+      const imageRect = photoPreview.getBoundingClientRect();
+      const panelRect = infoPanel.getBoundingClientRect();
+
+      const scaleX = naturalWidth / imageRect.width;
+      const scaleY = naturalHeight / imageRect.height;
+      const baseScale = Math.min(scaleX, scaleY);
+
+      const panelLeft = (panelRect.left - imageRect.left) * scaleX;
+      const panelTop = (panelRect.top - imageRect.top) * scaleY;
+      const panelWidth = panelRect.width * scaleX;
+      const panelHeight = panelRect.height * scaleY;
+      const radius = Math.max(14, 18 * baseScale);
+
+      context.save();
+
+      context.shadowColor = "rgba(0, 0, 0, 0.18)";
+      context.shadowBlur = 18 * baseScale;
+      context.shadowOffsetY = 8 * baseScale;
+
+      roundedRect(
+        context,
+        panelLeft,
+        panelTop,
+        panelWidth,
+        panelHeight,
+        radius
+      );
+
+      context.fillStyle = "rgba(7, 11, 13, 0.48)";
+      context.fill();
+
+      context.shadowColor = "transparent";
+      context.lineWidth = Math.max(1, 1.2 * baseScale);
+      context.strokeStyle = "rgba(255, 255, 255, 0.28)";
+      context.stroke();
+
+      const paddingX = 20 * baseScale;
+      let currentY = panelTop + 22 * baseScale;
+      const contentWidth = panelWidth - paddingX * 2;
+
+      context.fillStyle = "rgba(255, 255, 255, 0.48)";
+      roundedRect(
+        context,
+        panelLeft + panelWidth / 2 - 19 * baseScale,
+        currentY,
+        38 * baseScale,
+        4 * baseScale,
+        2 * baseScale
+      );
+      context.fill();
+
+      currentY += 28 * baseScale;
+
+      const cameraText = cameraLine.textContent.trim();
+      const basicText = basicLine.textContent.trim();
+      const settingsText = settingsLine.textContent.trim();
+
+      if (cameraText) {
+        context.font =
+          `650 ${15 * baseScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+        context.fillStyle = "rgba(255, 255, 255, 0.99)";
+        currentY = drawWrappedText(
+          context,
+          cameraText,
+          panelLeft + paddingX,
+          currentY,
+          contentWidth,
+          22 * baseScale
+        );
+        currentY += 7 * baseScale;
+      }
+
+      context.font =
+        `500 ${13 * baseScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+      context.fillStyle = "rgba(255, 255, 255, 0.84)";
+
+      if (basicText) {
+        currentY = drawWrappedText(
+          context,
+          basicText,
+          panelLeft + paddingX,
+          currentY,
+          contentWidth,
+          20 * baseScale
+        );
+        currentY += 7 * baseScale;
+      }
+
+      if (settingsText) {
+        currentY = drawWrappedText(
+          context,
+          settingsText,
+          panelLeft + paddingX,
+          currentY,
+          contentWidth,
+          20 * baseScale
+        );
+        currentY += 13 * baseScale;
+      }
+
+      context.beginPath();
+      context.moveTo(panelLeft + paddingX, currentY);
+      context.lineTo(panelLeft + panelWidth - paddingX, currentY);
+      context.lineWidth = Math.max(1, baseScale);
+      context.strokeStyle = "rgba(255, 255, 255, 0.22)";
+      context.stroke();
+
+      currentY += 18 * baseScale;
+
+      context.font =
+        `450 ${11 * baseScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+      context.fillStyle = "rgba(255, 255, 255, 0.72)";
+      context.fillText("— Chun Chun", panelLeft + paddingX, currentY);
+
+      context.restore();
+    }
+
+    function roundedRect(context, x, y, width, height, radius) {
+      const safeRadius = Math.min(radius, width / 2, height / 2);
+
+      context.beginPath();
+      context.moveTo(x + safeRadius, y);
+      context.arcTo(x + width, y, x + width, y + height, safeRadius);
+      context.arcTo(x + width, y + height, x, y + height, safeRadius);
+      context.arcTo(x, y + height, x, y, safeRadius);
+      context.arcTo(x, y, x + width, y, safeRadius);
+      context.closePath();
+    }
+
+    function drawWrappedText(context, text, x, startY, maxWidth, lineHeight) {
+      const words = text.split(/\s+/);
+      let line = "";
+      let y = startY;
+
+      words.forEach((word) => {
+        const testLine = line ? `${line} ${word}` : word;
+
+        if (context.measureText(testLine).width > maxWidth && line) {
+          context.fillText(line, x, y);
+          line = word;
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      });
+
+      if (line) {
+        context.fillText(line, x, y);
+        y += lineHeight;
+      }
+
+      return y;
     }
 
     function resetInfoPanelPosition() {
