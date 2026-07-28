@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V1.2.0 - full EXIF reader and adaptive info panel -->
+<!-- Through Chun Chun's Lens V3.1 - redesigned hero, full EXIF reader and adaptive info panel -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -133,60 +133,585 @@
       margin: 0 auto;
     }
 
+
+
+    /* =========================
+       V3.1 — Hero & Navigation
+       ========================= */
+
     .hero {
-      padding: 32px 12px 34px;
-      text-align: center;
+      position: relative;
+      min-height: min(820px, calc(100vh - 48px));
+      padding: 18px 0 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      isolation: isolate;
     }
 
-    .eyebrow {
-      margin: 0 0 12px;
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 999px;
+      pointer-events: none;
+      filter: blur(2px);
+    }
+
+    .hero::before {
+      width: 420px;
+      height: 420px;
+      top: 70px;
+      right: -110px;
+      background:
+        radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.94) 0%,
+          rgba(177, 216, 220, 0.36) 42%,
+          transparent 72%
+        );
+    }
+
+    .hero::after {
+      width: 300px;
+      height: 300px;
+      left: -130px;
+      bottom: 20px;
+      background:
+        radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(182, 217, 220, 0.25) 50%,
+          transparent 74%
+        );
+    }
+
+    .top-nav {
+      width: 100%;
+      min-height: 66px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.46);
+      box-shadow:
+        0 16px 45px rgba(39, 72, 77, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      backdrop-filter: blur(24px) saturate(150%);
+    }
+
+    .nav-logo {
+      color: var(--text);
+      text-decoration: none;
+      font-family: "Italianno", "La Belle Aurore", cursive;
+      font-size: clamp(28px, 3vw, 38px);
+      line-height: 1;
+      white-space: nowrap;
+      transition: opacity 160ms ease;
+    }
+
+    .nav-logo:hover {
+      opacity: 0.72;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: clamp(18px, 3vw, 34px);
+    }
+
+    .nav-menu a {
+      position: relative;
+      color: #526467;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: color 160ms ease;
+    }
+
+    .nav-menu a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -7px;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 180ms ease;
+    }
+
+    .nav-menu a:hover {
+      color: var(--text);
+    }
+
+    .nav-menu a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .hero-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      align-items: center;
+      gap: clamp(48px, 8vw, 110px);
+      padding: clamp(70px, 11vw, 132px) clamp(8px, 2vw, 22px) 40px;
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+    }
+
+    .hero-badge {
+      width: fit-content;
+      min-height: 34px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(53, 95, 101, 0.14);
+      border-radius: 999px;
       color: var(--accent);
-      font-size: 12px;
+      background: rgba(255, 255, 255, 0.58);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.24em;
+      letter-spacing: 0.11em;
       text-transform: uppercase;
     }
 
-    .brand-title {
-      margin: 0;
-      display: inline-flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 12px;
-
-      color: var(--text);
-
-      font-family:
-        "Italianno",
-        "Snell Roundhand",
-        "Segoe Script",
-        "Apple Chancery",
-        cursive;
-
-      font-size: clamp(56px, 8vw, 92px);
-      font-weight: 400;
-      line-height: 0.9;
-      letter-spacing: 0;
+    .hero-title {
+      margin: 27px 0 0;
+      color: #132326;
+      font-size: clamp(54px, 7.2vw, 96px);
+      font-weight: 690;
+      line-height: 0.96;
+      letter-spacing: -0.065em;
+      text-wrap: balance;
     }
 
-    .brand-heart {
-      width: clamp(24px, 3vw, 38px);
-      height: clamp(24px, 3vw, 38px);
-      margin-top: 0.03em;
-      flex: 0 0 auto;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.15;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    .hero-title .hero-accent {
+      display: inline-block;
+      color: #47777e;
+      font-weight: 610;
     }
 
     .hero-description {
-      width: min(600px, 100%);
-      margin: 18px auto 0;
-      color: var(--text-soft);
-      font-size: clamp(15px, 2vw, 18px);
-      line-height: 1.7;
+      max-width: 610px;
+      margin: 30px 0 0;
+      color: #647579;
+      font-size: clamp(15px, 1.6vw, 18px);
+      line-height: 1.78;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-actions {
+      margin-top: 34px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .hero-button {
+      min-height: 54px;
+      padding: 0 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 999px;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #315d63, #477a80);
+      box-shadow:
+        0 15px 34px rgba(53, 95, 101, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      transition:
+        transform 170ms ease,
+        box-shadow 170ms ease,
+        filter 170ms ease;
+    }
+
+    .hero-button:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 20px 40px rgba(53, 95, 101, 0.29),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      filter: brightness(1.04);
+    }
+
+    .hero-button:active {
+      transform: translateY(0) scale(0.985);
+    }
+
+    .hero-note {
+      color: #7b8a8d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .hero-right {
+      position: relative;
+      min-height: 500px;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+
+    .hero-visual {
+      position: relative;
+      width: min(430px, 100%);
+      aspect-ratio: 0.88;
+      padding: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 38px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.78),
+          rgba(255, 255, 255, 0.34)
+        );
+      box-shadow:
+        0 38px 90px rgba(39, 72, 77, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      -webkit-backdrop-filter: blur(28px) saturate(145%);
+      backdrop-filter: blur(28px) saturate(145%);
+      transform: rotate(2.5deg);
+      animation: heroFloat 7s ease-in-out infinite;
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      width: 44%;
+      height: 10px;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(79, 115, 120, 0.1);
+    }
+
+    .hero-frame {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 28px;
+      background:
+        radial-gradient(
+          circle at 73% 24%,
+          rgba(255, 240, 198, 0.95) 0 5%,
+          rgba(255, 226, 169, 0.38) 6% 16%,
+          transparent 32%
+        ),
+        linear-gradient(
+          180deg,
+          #d8eef0 0%,
+          #a8cfd2 36%,
+          #6c9aa0 59%,
+          #274e56 100%
+        );
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+        0 18px 40px rgba(39, 72, 77, 0.13);
+    }
+
+    .hero-frame::before {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: -2%;
+      height: 45%;
+      background:
+        radial-gradient(
+          ellipse at 20% 100%,
+          rgba(15, 50, 56, 0.95) 0 34%,
+          transparent 35%
+        ),
+        radial-gradient(
+          ellipse at 65% 100%,
+          rgba(20, 61, 67, 0.92) 0 37%,
+          transparent 38%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(39, 85, 91, 0.12),
+          rgba(17, 47, 52, 0.9)
+        );
+      filter: blur(0.3px);
+    }
+
+    .hero-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          115deg,
+          rgba(255, 255, 255, 0.38),
+          transparent 25% 74%,
+          rgba(12, 35, 39, 0.16)
+        );
+      pointer-events: none;
+    }
+
+    .hero-card-caption {
+      position: absolute;
+      left: 38px;
+      right: 38px;
+      bottom: 34px;
+      z-index: 2;
+      padding: 18px 19px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 20px;
+      color: #ffffff;
+      background: rgba(19, 42, 47, 0.18);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      backdrop-filter: blur(18px) saturate(140%);
+    }
+
+    .hero-card-kicker {
+      margin: 0 0 7px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .hero-card-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+      line-height: 1.35;
+      letter-spacing: -0.025em;
+    }
+
+    .hero-card-author {
+      margin: 7px 0 0;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .hero-floating-chip {
+      position: absolute;
+      z-index: 3;
+      min-height: 42px;
+      padding: 0 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      border-radius: 999px;
+      color: #3f6267;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 16px 36px rgba(39, 72, 77, 0.12);
+      -webkit-backdrop-filter: blur(18px) saturate(145%);
+      backdrop-filter: blur(18px) saturate(145%);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .hero-floating-chip::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5e8f95;
+      box-shadow: 0 0 0 5px rgba(94, 143, 149, 0.12);
+    }
+
+    .hero-chip-one {
+      top: 44px;
+      left: -44px;
+      animation: chipFloatOne 6s ease-in-out infinite;
+    }
+
+    .hero-chip-two {
+      right: -34px;
+      bottom: 96px;
+      animation: chipFloatTwo 7s ease-in-out infinite;
+    }
+
+    @keyframes heroFloat {
+      0%,
+      100% {
+        transform: rotate(2.5deg) translateY(0);
+      }
+
+      50% {
+        transform: rotate(1.3deg) translateY(-12px);
+      }
+    }
+
+    @keyframes chipFloatOne {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-9px);
+      }
+    }
+
+    @keyframes chipFloatTwo {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(10px);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        min-height: auto;
+        padding-bottom: 58px;
+      }
+
+      .hero-container {
+        grid-template-columns: 1fr;
+        gap: 52px;
+        padding-top: 78px;
+      }
+
+      .hero-left {
+        max-width: 760px;
+      }
+
+      .hero-title {
+        max-width: 780px;
+      }
+
+      .hero-right {
+        min-height: auto;
+        padding: 0 34px;
+      }
+
+      .hero-visual {
+        width: min(440px, 100%);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        padding: 8px 0 42px;
+      }
+
+      .top-nav {
+        min-height: 58px;
+        padding: 0 16px;
+        border-radius: 19px;
+      }
+
+      .nav-logo {
+        font-size: 27px;
+      }
+
+      .nav-menu {
+        display: none;
+      }
+
+      .hero-container {
+        gap: 45px;
+        padding: 62px 4px 16px;
+      }
+
+      .hero-badge {
+        min-height: 31px;
+        padding: 0 12px;
+        font-size: 9px;
+      }
+
+      .hero-title {
+        margin-top: 23px;
+        font-size: clamp(48px, 14.2vw, 70px);
+        line-height: 0.98;
+        letter-spacing: -0.06em;
+      }
+
+      .hero-description {
+        margin-top: 25px;
+        font-size: 15px;
+        line-height: 1.72;
+      }
+
+      .hero-actions {
+        margin-top: 29px;
+      }
+
+      .hero-button {
+        width: 100%;
+      }
+
+      .hero-note {
+        width: 100%;
+        text-align: center;
+      }
+
+      .hero-right {
+        padding: 0 10px;
+      }
+
+      .hero-visual {
+        width: min(390px, 100%);
+        padding: 15px;
+        border-radius: 30px;
+      }
+
+      .hero-frame {
+        border-radius: 23px;
+      }
+
+      .hero-card-caption {
+        left: 28px;
+        right: 28px;
+        bottom: 25px;
+        padding: 15px 16px;
+        border-radius: 17px;
+      }
+
+      .hero-chip-one {
+        top: 30px;
+        left: -4px;
+      }
+
+      .hero-chip-two {
+        right: -2px;
+        bottom: 78px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .hero-floating-chip {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 10px;
+      }
+
+      .hero-card-title {
+        font-size: 16px;
+      }
     }
 
     .workspace {
@@ -722,34 +1247,56 @@
 
   <main class="page">
     <header class="hero">
-      <p class="eyebrow">Photography Viewer</p>
+      <nav class="top-nav" aria-label="主要導覽">
+        <a href="#" class="nav-logo">Through Chun Chun's Lens</a>
 
-      <h1 class="brand-title">
-        <span>Through Chun Chun's Lens</span>
-        <svg
-          class="brand-heart"
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path
-            d="M16 27
-               C13 23, 5 18, 5 11.5
-               C5 7.4, 8 5, 11.4 5
-               C13.8 5, 15.2 6.4, 16 8
-               C16.8 6.4, 18.2 5, 20.6 5
-               C24 5, 27 7.4, 27 11.5
-               C27 18, 19 23, 16 27 Z"
-          />
-        </svg>
-      </h1>
+        <div class="nav-menu">
+          <a href="#studio">Photo Studio</a>
+          <a href="#works">Featured Works</a>
+          <a href="#story">The Story</a>
+        </div>
+      </nav>
 
-      <p class="hero-description">
-        Choose one photograph and let it take the whole stage.
-        A quiet space designed for every image you treasure.
-      </p>
+      <section class="hero-container">
+        <div class="hero-left">
+          <span class="hero-badge">Photography Presentation Tool</span>
+
+          <h1 class="hero-title">
+            Transform Every<br>
+            Photograph Into<br>
+            <span class="hero-accent">A Beautiful Story.</span>
+          </h1>
+
+          <p class="hero-description">
+            More than an image viewer. Through Chun Chun's Lens turns one
+            photograph into an elegant presentation by bringing together the
+            image, its camera settings, and the feeling behind every frame.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#studio" class="hero-button">Start Creating →</a>
+            <span class="hero-note">Private, local, and made for photographers.</span>
+          </div>
+        </div>
+
+        <div class="hero-right" aria-label="網站視覺示意">
+          <div class="hero-visual">
+            <div class="hero-frame"></div>
+
+            <div class="hero-card-caption">
+              <p class="hero-card-kicker">Featured Moment</p>
+              <p class="hero-card-title">Every frame carries a feeling.</p>
+              <p class="hero-card-author">Captured by Chun Chun</p>
+            </div>
+
+            <span class="hero-floating-chip hero-chip-one">Elegant presentation</span>
+            <span class="hero-floating-chip hero-chip-two">Real EXIF details</span>
+          </div>
+        </div>
+      </section>
     </header>
 
-    <section class="workspace">
+    <section class="workspace" id="studio">
       <div class="upload-view" id="uploadView">
         <div class="upload-card" id="uploadCard">
           <div class="upload-icon" aria-hidden="true">
