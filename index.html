@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V3.2.1 - complete photography landing page, social links and full EXIF studio -->
+<!-- Through Chun Chun's Lens V3.3 Material Edition - proportional photo scaling, draggable image, metallic glass themes and editable signature -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1343,13 +1343,88 @@
     }
 
     .photo-preview {
+      position: absolute;
+      left: 50%;
+      top: 50%;
       display: block;
       max-width: 100%;
       max-height: min(74vh, 780px);
       object-fit: contain;
-
+      transform: translate(calc(-50% + var(--photo-x, 0px)), calc(-50% + var(--photo-y, 0px))) scale(var(--photo-scale, 1));
+      transform-origin: center center;
+      cursor: grab;
+      touch-action: none;
       user-select: none;
       -webkit-user-drag: none;
+      transition: transform 120ms ease-out;
+    }
+
+    .photo-preview.dragging {
+      cursor: grabbing;
+      transition: none;
+    }
+
+    .studio-controls {
+      position: absolute;
+      top: 72px;
+      right: 18px;
+      z-index: 6;
+      width: min(320px, calc(100% - 36px));
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(12, 17, 19, 0.34);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      backdrop-filter: blur(22px) saturate(150%);
+    }
+
+    .control-row + .control-row { margin-top: 13px; }
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,.72);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .zoom-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    .zoom-slider { width: 100%; accent-color: #dce8e9; cursor: pointer; }
+    .control-mini-button {
+      min-height: 32px; padding: 0 11px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px;
+      color: rgba(255,255,255,.9); background: rgba(255,255,255,.08); cursor: pointer; font-size: 11px; font-weight: 650;
+    }
+    .material-swatches { display: flex; flex-wrap: wrap; gap: 9px; }
+    .material-swatch {
+      width: 28px; height: 28px; padding: 0; border: 2px solid rgba(255,255,255,.26); border-radius: 50%; cursor: pointer;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.65), 0 4px 12px rgba(0,0,0,.2); transition: transform 150ms ease, border-color 150ms ease;
+    }
+    .material-swatch:hover { transform: translateY(-2px) scale(1.05); }
+    .material-swatch.active { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.16), inset 0 1px 1px rgba(255,255,255,.75); }
+    .swatch-default { background: linear-gradient(145deg, rgba(255,255,255,.65), rgba(90,105,110,.36)); }
+    .swatch-titanium { background: linear-gradient(145deg, #eef1f1, #737e82); }
+    .swatch-black { background: linear-gradient(145deg, #60666a, #080a0b); }
+    .swatch-starlight { background: linear-gradient(145deg, #fff9e9, #c6aa7a); }
+    .swatch-ocean { background: linear-gradient(145deg, #8daebd, #183847); }
+    .swatch-forest { background: linear-gradient(145deg, #7e9b8b, #173a2d); }
+    .swatch-gold { background: linear-gradient(145deg, #f0d7a8, #8a6237); }
+    .signature-input {
+      width: 100%; min-height: 38px; padding: 0 12px; border: 1px solid rgba(255,255,255,.17); border-radius: 12px;
+      color: #fff; background: rgba(255,255,255,.08); outline: none;
+    }
+    .signature-input:focus { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.12); }
+
+    .info-panel {
+      --panel-bg: rgba(0, 0, 0, 0.03);
+      --panel-bg-hover: rgba(15, 18, 20, 0.08);
+      --panel-border: rgba(255, 255, 255, 0.26);
+      --panel-shadow: none;
+      --panel-blur: 2px;
     }
 
     .photo-toolbar {
@@ -1439,15 +1514,15 @@
       max-width: calc(100% - 52px);
       padding: 16px 20px 18px;
 
-      border: 1px solid rgba(255, 255, 255, 0.26);
+      border: 1px solid var(--panel-border);
       border-radius: 18px;
 
       color: #ffffff;
-      background: rgba(0, 0, 0, 0.03);
-      box-shadow: none;
+      background: var(--panel-bg);
+      box-shadow: var(--panel-shadow);
 
-      -webkit-backdrop-filter: blur(2px);
-      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(var(--panel-blur)) saturate(145%);
+      backdrop-filter: blur(var(--panel-blur)) saturate(145%);
 
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.68);
 
@@ -1461,8 +1536,37 @@
         background 180ms ease;
     }
 
-    .info-panel:hover {
-      background: rgba(15, 18, 20, 0.08);
+    .info-panel:hover { background: var(--panel-bg-hover); }
+
+    .info-panel.material-titanium {
+      --panel-bg: linear-gradient(145deg, rgba(225,231,232,.34), rgba(85,96,100,.22));
+      --panel-bg-hover: linear-gradient(145deg, rgba(235,240,241,.42), rgba(85,96,100,.28));
+      --panel-border: rgba(231,238,239,.52); --panel-shadow: 0 16px 38px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.48); --panel-blur: 18px;
+    }
+    .info-panel.material-black {
+      --panel-bg: linear-gradient(145deg, rgba(62,67,70,.48), rgba(4,6,7,.58));
+      --panel-bg-hover: linear-gradient(145deg, rgba(72,78,82,.56), rgba(4,6,7,.64));
+      --panel-border: rgba(187,195,198,.28); --panel-shadow: 0 18px 42px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.16); --panel-blur: 18px;
+    }
+    .info-panel.material-starlight {
+      --panel-bg: linear-gradient(145deg, rgba(255,248,226,.42), rgba(177,145,95,.24));
+      --panel-bg-hover: linear-gradient(145deg, rgba(255,251,237,.5), rgba(177,145,95,.3));
+      --panel-border: rgba(255,239,200,.52); --panel-shadow: 0 18px 42px rgba(87,63,30,.2), inset 0 1px 0 rgba(255,255,255,.5); --panel-blur: 18px;
+    }
+    .info-panel.material-ocean {
+      --panel-bg: linear-gradient(145deg, rgba(100,151,171,.4), rgba(10,43,57,.42));
+      --panel-bg-hover: linear-gradient(145deg, rgba(113,166,187,.48), rgba(10,43,57,.5));
+      --panel-border: rgba(160,211,230,.42); --panel-shadow: 0 18px 42px rgba(3,28,40,.28), inset 0 1px 0 rgba(214,242,251,.28); --panel-blur: 18px;
+    }
+    .info-panel.material-forest {
+      --panel-bg: linear-gradient(145deg, rgba(89,133,111,.4), rgba(10,52,38,.44));
+      --panel-bg-hover: linear-gradient(145deg, rgba(101,147,124,.48), rgba(10,52,38,.5));
+      --panel-border: rgba(164,207,184,.4); --panel-shadow: 0 18px 42px rgba(4,35,23,.28), inset 0 1px 0 rgba(221,244,232,.24); --panel-blur: 18px;
+    }
+    .info-panel.material-gold {
+      --panel-bg: linear-gradient(145deg, rgba(226,189,126,.42), rgba(102,66,29,.38));
+      --panel-bg-hover: linear-gradient(145deg, rgba(238,203,142,.5), rgba(102,66,29,.46));
+      --panel-border: rgba(250,218,162,.48); --panel-shadow: 0 18px 42px rgba(67,39,11,.26), inset 0 1px 0 rgba(255,242,213,.34); --panel-blur: 18px;
     }
 
     .info-panel.dragging {
@@ -1591,6 +1695,10 @@
         left: 12px;
         right: 12px;
         align-items: flex-start;
+      }
+
+      .studio-controls {
+        top: 62px; right: 12px; width: min(290px, calc(100% - 24px)); padding: 12px; border-radius: 17px;
       }
 
       .toolbar-group {
@@ -1912,6 +2020,32 @@
             </div>
           </div>
 
+          <div class="studio-controls" aria-label="照片與資訊框設定">
+            <div class="control-row">
+              <div class="control-label"><span>Photo scale</span><span id="zoomValue">100%</span></div>
+              <div class="zoom-row">
+                <input class="zoom-slider" id="zoomSlider" type="range" min="50" max="300" value="100" step="1" aria-label="照片等比例縮放">
+                <button class="control-mini-button" id="resetPhotoButton" type="button">重設</button>
+              </div>
+            </div>
+            <div class="control-row">
+              <div class="control-label"><span>Material</span><span id="materialName">Original Glass</span></div>
+              <div class="material-swatches">
+                <button class="material-swatch swatch-default active" type="button" data-material="default" data-label="Original Glass" title="Original Glass" aria-label="Original Glass"></button>
+                <button class="material-swatch swatch-titanium" type="button" data-material="titanium" data-label="Titanium Silver" title="Titanium Silver" aria-label="Titanium Silver"></button>
+                <button class="material-swatch swatch-black" type="button" data-material="black" data-label="Space Black" title="Space Black" aria-label="Space Black"></button>
+                <button class="material-swatch swatch-starlight" type="button" data-material="starlight" data-label="Starlight" title="Starlight" aria-label="Starlight"></button>
+                <button class="material-swatch swatch-ocean" type="button" data-material="ocean" data-label="Deep Ocean" title="Deep Ocean" aria-label="Deep Ocean"></button>
+                <button class="material-swatch swatch-forest" type="button" data-material="forest" data-label="Forest Green" title="Forest Green" aria-label="Forest Green"></button>
+                <button class="material-swatch swatch-gold" type="button" data-material="gold" data-label="Champagne Gold" title="Champagne Gold" aria-label="Champagne Gold"></button>
+              </div>
+            </div>
+            <div class="control-row">
+              <label class="control-label" for="signatureInput"><span>Signature</span><span>可自行更改</span></label>
+              <input class="signature-input" id="signatureInput" type="text" value="Chun Chun" maxlength="40" placeholder="輸入名字">
+            </div>
+          </div>
+
           <aside
             class="info-panel"
             id="infoPanel"
@@ -1927,7 +2061,7 @@
             </div>
 
             <div class="signature">
-              <p class="signature-name">— Chun Chun</p>
+              <p class="signature-name" id="signatureName">— Chun Chun</p>
             </div>
           </aside>
         </div>
@@ -2051,16 +2185,41 @@
     const basicLine = document.getElementById("basicLine");
     const settingsLine = document.getElementById("settingsLine");
     const exifLoading = document.getElementById("exifLoading");
+    const zoomSlider = document.getElementById("zoomSlider");
+    const zoomValue = document.getElementById("zoomValue");
+    const resetPhotoButton = document.getElementById("resetPhotoButton");
+    const materialName = document.getElementById("materialName");
+    const materialSwatches = Array.from(document.querySelectorAll(".material-swatch"));
+    const signatureInput = document.getElementById("signatureInput");
+    const signatureName = document.getElementById("signatureName");
 
     let currentFile = null;
     let currentObjectUrl = null;
     let infoVisible = true;
+    let photoScale = 1;
+    let photoX = 0;
+    let photoY = 0;
+    let photoDragging = false;
+    let photoPointerStartX = 0;
+    let photoPointerStartY = 0;
+    let photoOriginX = 0;
+    let photoOriginY = 0;
+    let currentMaterial = "default";
 
     chooseButton.addEventListener("click", openFilePicker);
     changeButton.addEventListener("click", openFilePicker);
     downloadButton.addEventListener("click", downloadOriginalPhoto);
     toggleInfoButton.addEventListener("click", toggleInfoPanel);
     fileInput.addEventListener("change", handleFileSelection);
+    zoomSlider.addEventListener("input", () => setPhotoScale(Number(zoomSlider.value) / 100));
+    resetPhotoButton.addEventListener("click", resetPhotoTransform);
+    photoStage.addEventListener("wheel", handlePhotoWheel, { passive: false });
+    photoPreview.addEventListener("pointerdown", startPhotoDragging);
+    window.addEventListener("pointermove", movePhoto);
+    window.addEventListener("pointerup", stopPhotoDragging);
+    window.addEventListener("pointercancel", stopPhotoDragging);
+    signatureInput.addEventListener("input", updateSignature);
+    materialSwatches.forEach((button) => button.addEventListener("click", () => setMaterial(button.dataset.material, button.dataset.label)));
 
     function openFilePicker() {
       fileInput.value = "";
@@ -2096,6 +2255,7 @@
 
       photoPreview.onload = () => {
         resetInfoPanelPosition();
+        resetPhotoTransform();
       };
 
       photoPreview.onerror = () => {
@@ -2404,6 +2564,66 @@
       return mimeType === "JPEG" ? "JPEG" : mimeType || "IMAGE";
     }
 
+    function applyPhotoTransform() {
+      photoPreview.style.setProperty("--photo-scale", photoScale);
+      photoPreview.style.setProperty("--photo-x", `${photoX}px`);
+      photoPreview.style.setProperty("--photo-y", `${photoY}px`);
+      zoomSlider.value = String(Math.round(photoScale * 100));
+      zoomValue.textContent = `${Math.round(photoScale * 100)}%`;
+    }
+
+    function setPhotoScale(nextScale) {
+      photoScale = Math.min(3, Math.max(0.5, nextScale));
+      applyPhotoTransform();
+    }
+
+    function resetPhotoTransform() {
+      photoScale = 1; photoX = 0; photoY = 0; applyPhotoTransform();
+    }
+
+    function handlePhotoWheel(event) {
+      if (!photoView.classList.contains("visible")) return;
+      event.preventDefault();
+      setPhotoScale(photoScale + (event.deltaY < 0 ? 0.08 : -0.08));
+    }
+
+    function startPhotoDragging(event) {
+      if (event.button !== undefined && event.button !== 0) return;
+      photoDragging = true;
+      photoPointerStartX = event.clientX; photoPointerStartY = event.clientY;
+      photoOriginX = photoX; photoOriginY = photoY;
+      photoPreview.classList.add("dragging");
+      try { photoPreview.setPointerCapture(event.pointerId); } catch (error) {}
+      event.preventDefault();
+    }
+
+    function movePhoto(event) {
+      if (!photoDragging) return;
+      photoX = photoOriginX + event.clientX - photoPointerStartX;
+      photoY = photoOriginY + event.clientY - photoPointerStartY;
+      applyPhotoTransform();
+      event.preventDefault();
+    }
+
+    function stopPhotoDragging(event) {
+      if (!photoDragging) return;
+      photoDragging = false; photoPreview.classList.remove("dragging");
+      try { photoPreview.releasePointerCapture(event.pointerId); } catch (error) {}
+    }
+
+    function setMaterial(material, label) {
+      currentMaterial = material || "default";
+      infoPanel.classList.remove("material-titanium", "material-black", "material-starlight", "material-ocean", "material-forest", "material-gold");
+      if (currentMaterial !== "default") infoPanel.classList.add(`material-${currentMaterial}`);
+      materialName.textContent = label || "Original Glass";
+      materialSwatches.forEach((button) => button.classList.toggle("active", button.dataset.material === currentMaterial));
+    }
+
+    function updateSignature() {
+      const name = signatureInput.value.trim() || "Chun Chun";
+      signatureName.textContent = `— ${name}`;
+    }
+
     function toggleInfoPanel() {
       if (infoVisible) {
         hideInfoPanel();
@@ -2427,191 +2647,84 @@
     }
 
     async function downloadOriginalPhoto() {
-      if (!currentFile || !currentObjectUrl || !photoPreview.complete) {
-        return;
-      }
-
+      if (!currentFile || !currentObjectUrl || !photoPreview.complete) return;
       try {
-        const naturalWidth = photoPreview.naturalWidth;
-        const naturalHeight = photoPreview.naturalHeight;
-
-        if (!naturalWidth || !naturalHeight) {
-          throw new Error("Image dimensions unavailable");
-        }
-
+        const stageRect = photoStage.getBoundingClientRect();
+        const imageRect = photoPreview.getBoundingClientRect();
+        const exportScale = Math.min(3, Math.max(1.5, 3000 / Math.max(stageRect.width, stageRect.height)));
         const canvas = document.createElement("canvas");
-        canvas.width = naturalWidth;
-        canvas.height = naturalHeight;
-
+        canvas.width = Math.round(stageRect.width * exportScale);
+        canvas.height = Math.round(stageRect.height * exportScale);
         const context = canvas.getContext("2d");
+        if (!context) throw new Error("Canvas unavailable");
 
-        if (!context) {
-          throw new Error("Canvas unavailable");
-        }
+        const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, "#141d1f"); gradient.addColorStop(1, "#0a1012");
+        context.fillStyle = gradient; context.fillRect(0, 0, canvas.width, canvas.height);
 
-        context.drawImage(photoPreview, 0, 0, naturalWidth, naturalHeight);
+        const drawX = (imageRect.left - stageRect.left) * exportScale;
+        const drawY = (imageRect.top - stageRect.top) * exportScale;
+        const drawW = imageRect.width * exportScale;
+        const drawH = imageRect.height * exportScale;
+        context.drawImage(photoPreview, drawX, drawY, drawW, drawH);
 
         if (infoVisible && !infoPanel.classList.contains("hidden")) {
-          drawInfoPanelOnCanvas(context, naturalWidth, naturalHeight);
+          drawInfoPanelOnCanvas(context, stageRect, exportScale);
         }
 
-        const mimeType =
-          currentFile.type === "image/png"
-            ? "image/png"
-            : "image/jpeg";
-
+        const mimeType = currentFile.type === "image/png" ? "image/png" : "image/jpeg";
         const extension = mimeType === "image/png" ? "png" : "jpg";
-        const originalName =
-          currentFile.name.replace(/\.[^.]+$/, "") || "photograph";
-
-        const blob = await new Promise((resolve, reject) => {
-          canvas.toBlob(
-            (result) => {
-              if (result) {
-                resolve(result);
-              } else {
-                reject(new Error("Export failed"));
-              }
-            },
-            mimeType,
-            0.95
-          );
-        });
-
+        const originalName = currentFile.name.replace(/\.[^.]+$/, "") || "photograph";
+        const blob = await new Promise((resolve, reject) => canvas.toBlob(result => result ? resolve(result) : reject(new Error("Export failed")), mimeType, 0.95));
         const exportUrl = URL.createObjectURL(blob);
         const downloadLink = document.createElement("a");
-
-        downloadLink.href = exportUrl;
-        downloadLink.download = `${originalName}-with-info.${extension}`;
-
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        downloadLink.remove();
-
-        window.setTimeout(() => {
-          URL.revokeObjectURL(exportUrl);
-        }, 1000);
+        downloadLink.href = exportUrl; downloadLink.download = `${originalName}-with-info.${extension}`;
+        document.body.appendChild(downloadLink); downloadLink.click(); downloadLink.remove();
+        window.setTimeout(() => URL.revokeObjectURL(exportUrl), 1000);
       } catch (error) {
-        errorMessage.textContent =
-          "目前無法產生含資訊框的照片，請重新選擇照片後再試一次。";
+        errorMessage.textContent = "目前無法產生成品，請重新選擇照片後再試一次。";
       }
     }
 
-    function drawInfoPanelOnCanvas(context, naturalWidth, naturalHeight) {
-      const imageRect = photoPreview.getBoundingClientRect();
+    function drawInfoPanelOnCanvas(context, stageRect, exportScale) {
       const panelRect = infoPanel.getBoundingClientRect();
-
-      const scaleX = naturalWidth / imageRect.width;
-      const scaleY = naturalHeight / imageRect.height;
-      const baseScale = Math.min(scaleX, scaleY);
-
-      const panelLeft = (panelRect.left - imageRect.left) * scaleX;
-      const panelTop = (panelRect.top - imageRect.top) * scaleY;
-      const panelWidth = panelRect.width * scaleX;
-      const panelHeight = panelRect.height * scaleY;
-      const radius = Math.max(14, 18 * baseScale);
-
+      const panelLeft = (panelRect.left - stageRect.left) * exportScale;
+      const panelTop = (panelRect.top - stageRect.top) * exportScale;
+      const panelWidth = panelRect.width * exportScale;
+      const panelHeight = panelRect.height * exportScale;
+      const radius = 18 * exportScale;
+      const themes = {
+        default: ["rgba(0,0,0,.14)", "rgba(255,255,255,.30)"],
+        titanium: ["rgba(94,105,109,.58)", "rgba(231,238,239,.58)"],
+        black: ["rgba(12,14,15,.78)", "rgba(187,195,198,.32)"],
+        starlight: ["rgba(155,126,79,.60)", "rgba(255,239,200,.60)"],
+        ocean: ["rgba(19,67,87,.68)", "rgba(160,211,230,.48)"],
+        forest: ["rgba(19,78,55,.68)", "rgba(164,207,184,.46)"],
+        gold: ["rgba(122,79,34,.68)", "rgba(250,218,162,.54)"]
+      };
+      const [fill, border] = themes[currentMaterial] || themes.default;
       context.save();
+      context.shadowColor = "rgba(0,0,0,.24)"; context.shadowBlur = 18 * exportScale; context.shadowOffsetY = 8 * exportScale;
+      roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, radius);
+      context.fillStyle = fill; context.fill();
+      context.shadowColor = "transparent"; context.lineWidth = Math.max(1, 1.2 * exportScale); context.strokeStyle = border; context.stroke();
 
-      context.shadowColor = "rgba(0, 0, 0, 0.18)";
-      context.shadowBlur = 18 * baseScale;
-      context.shadowOffsetY = 8 * baseScale;
-
-      roundedRect(
-        context,
-        panelLeft,
-        panelTop,
-        panelWidth,
-        panelHeight,
-        radius
-      );
-
-      context.fillStyle = "rgba(7, 11, 13, 0.48)";
-      context.fill();
-
-      context.shadowColor = "transparent";
-      context.lineWidth = Math.max(1, 1.2 * baseScale);
-      context.strokeStyle = "rgba(255, 255, 255, 0.28)";
-      context.stroke();
-
-      const paddingX = 20 * baseScale;
-      let currentY = panelTop + 22 * baseScale;
-      const contentWidth = panelWidth - paddingX * 2;
-
-      context.fillStyle = "rgba(255, 255, 255, 0.48)";
-      roundedRect(
-        context,
-        panelLeft + panelWidth / 2 - 19 * baseScale,
-        currentY,
-        38 * baseScale,
-        4 * baseScale,
-        2 * baseScale
-      );
-      context.fill();
-
-      currentY += 28 * baseScale;
-
-      const cameraText = cameraLine.textContent.trim();
-      const basicText = basicLine.textContent.trim();
-      const settingsText = settingsLine.textContent.trim();
-
+      const paddingX = 20 * exportScale; let currentY = panelTop + 22 * exportScale; const contentWidth = panelWidth - paddingX * 2;
+      context.fillStyle = "rgba(255,255,255,.48)";
+      roundedRect(context, panelLeft + panelWidth / 2 - 19 * exportScale, currentY, 38 * exportScale, 4 * exportScale, 2 * exportScale); context.fill();
+      currentY += 28 * exportScale;
+      const cameraText = cameraLine.textContent.trim(); const basicText = basicLine.textContent.trim(); const settingsText = settingsLine.textContent.trim();
       if (cameraText) {
-        context.font =
-          `650 ${15 * baseScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
-        context.fillStyle = "rgba(255, 255, 255, 0.99)";
-        currentY = drawWrappedText(
-          context,
-          cameraText,
-          panelLeft + paddingX,
-          currentY,
-          contentWidth,
-          22 * baseScale
-        );
-        currentY += 7 * baseScale;
+        context.font = `650 ${15 * exportScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.99)";
+        currentY = drawWrappedText(context, cameraText, panelLeft + paddingX, currentY, contentWidth, 22 * exportScale); currentY += 7 * exportScale;
       }
-
-      context.font =
-        `500 ${13 * baseScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
-      context.fillStyle = "rgba(255, 255, 255, 0.84)";
-
-      if (basicText) {
-        currentY = drawWrappedText(
-          context,
-          basicText,
-          panelLeft + paddingX,
-          currentY,
-          contentWidth,
-          20 * baseScale
-        );
-        currentY += 7 * baseScale;
-      }
-
-      if (settingsText) {
-        currentY = drawWrappedText(
-          context,
-          settingsText,
-          panelLeft + paddingX,
-          currentY,
-          contentWidth,
-          20 * baseScale
-        );
-        currentY += 13 * baseScale;
-      }
-
-      context.beginPath();
-      context.moveTo(panelLeft + paddingX, currentY);
-      context.lineTo(panelLeft + panelWidth - paddingX, currentY);
-      context.lineWidth = Math.max(1, baseScale);
-      context.strokeStyle = "rgba(255, 255, 255, 0.22)";
-      context.stroke();
-
-      currentY += 18 * baseScale;
-
-      context.font =
-        `450 ${11 * baseScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
-      context.fillStyle = "rgba(255, 255, 255, 0.72)";
-      context.fillText("— Chun Chun", panelLeft + paddingX, currentY);
-
+      context.font = `500 ${13 * exportScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.84)";
+      if (basicText) { currentY = drawWrappedText(context, basicText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale); currentY += 7 * exportScale; }
+      if (settingsText) { currentY = drawWrappedText(context, settingsText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale); currentY += 13 * exportScale; }
+      context.beginPath(); context.moveTo(panelLeft + paddingX, currentY); context.lineTo(panelLeft + panelWidth - paddingX, currentY);
+      context.lineWidth = Math.max(1, exportScale); context.strokeStyle = "rgba(255,255,255,.22)"; context.stroke(); currentY += 18 * exportScale;
+      context.font = `450 ${11 * exportScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.72)";
+      context.fillText(signatureName.textContent.trim(), panelLeft + paddingX, currentY);
       context.restore();
     }
 
@@ -2742,6 +2855,10 @@
         // 沒有捕捉指標時不需要處理。
       }
     }
+
+    updateSignature();
+    setMaterial("default", "Original Glass");
+    applyPhotoTransform();
 
     ["dragenter", "dragover"].forEach((eventName) => {
       uploadCard.addEventListener(eventName, (event) => {
