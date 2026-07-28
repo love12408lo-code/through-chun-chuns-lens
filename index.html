@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V4.3 True Scale Export & Guide Rebuild Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V4.4 Exact Card Export & Full Width Guide Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -17,6 +17,7 @@
   <title>Through Chun Chun's Lens</title>
 
   <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2059,7 +2060,7 @@
 
 
     /* =========================
-       V4.3 — Softer Typography & Card Polish
+       V4.4 — Softer Typography & Card Polish
        ========================= */
 
     .hero-title,
@@ -2282,7 +2283,7 @@
 
 
     /* =========================
-       V4.3 — Material Experience
+       V4.4 — Material Experience
        ========================= */
 
     .material-swatches {
@@ -2384,7 +2385,7 @@
     }
 
     /* =========================
-       V4.3 — Add to Home Screen
+       V4.4 — Add to Home Screen
        ========================= */
 
     .install-section {
@@ -2449,9 +2450,9 @@
     }
 
     .install-guide {
-      width: min(960px, 100%);
+      width: 100%;
       height: auto;
-      margin: 0 auto;
+      margin: 0;
       display: block;
       border: 1px solid rgba(255,255,255,.88);
       border-radius: 28px;
@@ -3510,7 +3511,7 @@
         context.drawImage(photoPreview, drawX, drawY, drawW, drawH);
 
         if (infoVisible && !infoPanel.classList.contains("hidden")) {
-          drawInfoPanelOnCanvas(context, stageRect, exportScale);
+          await drawInfoPanelOnCanvas(context, stageRect, exportScale);
         }
 
         const mimeType = currentFile.type === "image/png" ? "image/png" : "image/jpeg";
@@ -3623,107 +3624,89 @@
       }
     }
 
-    function drawInfoPanelOnCanvas(context, stageRect, exportScale) {
+    async function drawInfoPanelOnCanvas(context, stageRect, exportScale) {
       const panelRect = infoPanel.getBoundingClientRect();
-      const panelLeft = (panelRect.left - stageRect.left) * exportScale;
-      const panelTop = (panelRect.top - stageRect.top) * exportScale;
-      const panelWidth = panelRect.width * exportScale;
-      const panelHeight = panelRect.height * exportScale;
-      const radius = 18 * exportScale;
 
-      const themes = {
-        default: ["rgba(0,0,0,.14)", "rgba(255,255,255,.30)"],
-        titanium: ["rgba(94,105,109,.58)", "rgba(231,238,239,.58)"],
-        black: ["rgba(12,14,15,.78)", "rgba(187,195,198,.32)"],
-        starlight: ["rgba(155,126,79,.60)", "rgba(255,239,200,.60)"],
-        ocean: ["rgba(19,67,87,.68)", "rgba(160,211,230,.48)"],
-        forest: ["rgba(19,78,55,.68)", "rgba(164,207,184,.46)"],
-        gold: ["rgba(122,79,34,.68)", "rgba(250,218,162,.54)"]
-      };
+      if (typeof html2canvas !== "function") {
+        throw new Error("html2canvas unavailable");
+      }
 
-      const [fill, border] = themes[currentMaterial] || themes.default;
+      /*
+       * Export an off-screen clone of the real information card.
+       * This preserves the browser's exact:
+       * - font sizing
+       * - wrapping
+       * - line spacing
+       * - signature position
+       * - selected material
+       *
+       * It replaces the previous manual re-drawing method, which could never
+       * perfectly match the visible card after resizing.
+       */
+      const cloneHost = document.createElement("div");
+      cloneHost.setAttribute("aria-hidden", "true");
+      cloneHost.style.position = "fixed";
+      cloneHost.style.left = "-100000px";
+      cloneHost.style.top = "0";
+      cloneHost.style.width = `${panelRect.width}px`;
+      cloneHost.style.height = `${panelRect.height}px`;
+      cloneHost.style.pointerEvents = "none";
+      cloneHost.style.zIndex = "-99999";
+      cloneHost.style.overflow = "visible";
 
-      context.save();
-      context.shadowColor = "rgba(0,0,0,.24)";
-      context.shadowBlur = 18 * exportScale;
-      context.shadowOffsetY = 8 * exportScale;
+      const clone = infoPanel.cloneNode(true);
+      clone.classList.remove("dragging", "resizing", "hidden");
+      clone.style.position = "relative";
+      clone.style.left = "0";
+      clone.style.top = "0";
+      clone.style.right = "auto";
+      clone.style.bottom = "auto";
+      clone.style.width = `${panelRect.width}px`;
+      clone.style.height = `${panelRect.height}px`;
+      clone.style.minWidth = "0";
+      clone.style.maxWidth = "none";
+      clone.style.transform = "none";
+      clone.style.transformOrigin = "top left";
+      clone.style.margin = "0";
+      clone.style.cursor = "default";
+      clone.style.opacity = "1";
 
-      roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, radius);
-      context.fillStyle = fill;
-      context.fill();
+      // Exported artwork should not include editing handles.
+      clone.querySelector(".resize-handle")?.remove();
 
-      context.shadowColor = "transparent";
-      context.lineWidth = Math.max(1, 1.2 * exportScale);
-      context.strokeStyle = border;
-      context.stroke();
+      cloneHost.appendChild(clone);
+      document.body.appendChild(cloneHost);
 
-      // Draw each element from its real on-screen position.
-      // This avoids applying the panel scale twice during export.
-      const drawElementText = (element, weight, color, fallbackSize, lineHeightMultiplier = 1.45) => {
-        if (!element || element.classList.contains("hidden")) return;
+      try {
+        // Wait for the browser to finish laying out the clone.
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-        const text = element.textContent.trim();
-        if (!text) return;
+        const panelCanvas = await html2canvas(clone, {
+          backgroundColor: null,
+          scale: exportScale,
+          useCORS: true,
+          logging: false,
+          width: panelRect.width,
+          height: panelRect.height,
+          windowWidth: document.documentElement.clientWidth,
+          windowHeight: document.documentElement.clientHeight
+        });
 
-        const rect = element.getBoundingClientRect();
-        const computed = window.getComputedStyle(element);
-        const screenFontSize = parseFloat(computed.fontSize) || fallbackSize;
-        const renderedPanelScale = panelRect.width / Math.max(1, infoPanel.offsetWidth);
-        const fontSize = screenFontSize * renderedPanelScale * exportScale;
-        const lineHeight = fontSize * lineHeightMultiplier;
-        const x = (rect.left - stageRect.left) * exportScale;
-        const renderedLineHeight = parseFloat(computed.lineHeight);
-        const firstLineHeight = Number.isFinite(renderedLineHeight)
-          ? renderedLineHeight * renderedPanelScale * exportScale
-          : lineHeight;
-        const y = (rect.top - stageRect.top) * exportScale
-          + Math.min(firstLineHeight * 0.82, fontSize * 1.08);
-        const maxWidth = Math.max(10, (rect.width - 2) * exportScale);
+        const panelLeft = (panelRect.left - stageRect.left) * exportScale;
+        const panelTop = (panelRect.top - stageRect.top) * exportScale;
+        const panelWidth = panelRect.width * exportScale;
+        const panelHeight = panelRect.height * exportScale;
 
-        context.font = `${weight} ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
-        context.fillStyle = color;
-        drawWrappedText(context, text, x, y, maxWidth, lineHeight);
-      };
-
-      // Drag handle
-      const handleRect = infoPanel.querySelector(".drag-handle")?.getBoundingClientRect();
-      if (handleRect) {
-        context.fillStyle = "rgba(255,255,255,.48)";
-        roundedRect(
-          context,
-          (handleRect.left - stageRect.left) * exportScale,
-          (handleRect.top - stageRect.top) * exportScale,
-          handleRect.width * exportScale,
-          handleRect.height * exportScale,
-          2 * exportScale
+        context.drawImage(
+          panelCanvas,
+          panelLeft,
+          panelTop,
+          panelWidth,
+          panelHeight
         );
-        context.fill();
+      } finally {
+        cloneHost.remove();
       }
-
-      drawElementText(cameraLine, 650, "rgba(255,255,255,.99)", 15, 1.45);
-      drawElementText(basicLine, 500, "rgba(255,255,255,.84)", 13, 1.5);
-      drawElementText(settingsLine, 500, "rgba(255,255,255,.84)", 13, 1.5);
-
-      // Divider line follows the actual signature container position.
-      const signatureBox = infoPanel.querySelector(".signature");
-      if (signatureBox) {
-        const sigBoxRect = signatureBox.getBoundingClientRect();
-        const sigStyle = window.getComputedStyle(signatureBox);
-        const borderTop = parseFloat(sigStyle.borderTopWidth) || 1;
-        const lineY = (sigBoxRect.top - stageRect.top) * exportScale;
-
-        context.beginPath();
-        context.moveTo((sigBoxRect.left - stageRect.left) * exportScale, lineY);
-        context.lineTo((sigBoxRect.right - stageRect.left) * exportScale, lineY);
-        context.lineWidth = Math.max(1, borderTop * exportScale);
-        context.strokeStyle = "rgba(255,255,255,.22)";
-        context.stroke();
-      }
-
-      // Signature now uses its exact visible position instead of a calculated flow position.
-      drawElementText(signatureName, 450, "rgba(255,255,255,.72)", 11, 1.4);
-
-      context.restore();
     }
 
     function roundedRect(context, x, y, width, height, radius) {
