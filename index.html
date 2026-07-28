@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V3.4 Corner Resize Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V3.5 Corner Resize Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1066,6 +1066,36 @@
       margin: 10px 0 0;
       font-size: 12px;
       line-height: 1.6;
+    }
+
+    .creations-counter {
+      width: fit-content;
+      margin: 15px 0 0;
+      padding: 9px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(53, 95, 101, 0.14);
+      border-radius: 999px;
+      color: #355f65;
+      background: rgba(255, 255, 255, 0.50);
+      box-shadow:
+        0 10px 28px rgba(39, 72, 77, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.86);
+      -webkit-backdrop-filter: blur(18px) saturate(145%);
+      backdrop-filter: blur(18px) saturate(145%);
+      font-size: 13px;
+      font-weight: 720;
+      letter-spacing: 0.01em;
+    }
+
+    .creations-counter.loading {
+      opacity: 0.66;
+    }
+
+    .creations-counter-icon {
+      font-size: 14px;
+      line-height: 1;
     }
 
     .footer-links {
@@ -2202,6 +2232,16 @@
       <div class="footer-inner">
         <div>
           <p class="footer-brand">Through Chun Chun's Lens</p>
+          <div
+            class="creations-counter loading"
+            id="creationsCounter"
+            aria-live="polite"
+            title="下載完成的作品總數"
+          >
+            <span class="creations-counter-icon" aria-hidden="true">🌍</span>
+            <span id="creationsCount">—</span>
+            <span>Creations</span>
+          </div>
           <p class="footer-line">
             One photograph at a time.<br>
             © 2026 Chun Chun
@@ -2226,6 +2266,14 @@
     const downloadButton = document.getElementById("downloadButton");
     const toggleInfoButton = document.getElementById("toggleInfoButton");
     const toggleInfoLabel = document.getElementById("toggleInfoLabel");
+    const creationsCounter = document.getElementById("creationsCounter");
+    const creationsCount = document.getElementById("creationsCount");
+
+    const SUPABASE_URL = "https://mnuppwyzabgzaguqkbcc.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_CdUcKDjppCnr_gp0-Y8nsA_qrSH1U76";
+    const STATS_TABLE = "website_stats";
+    let statsRowId = 1;
+    let totalCreations = null;
 
     const uploadView = document.getElementById("uploadView");
     const uploadCard = document.getElementById("uploadCard");
@@ -2267,6 +2315,8 @@
     downloadButton.addEventListener("click", downloadOriginalPhoto);
     toggleInfoButton.addEventListener("click", toggleInfoPanel);
     fileInput.addEventListener("change", handleFileSelection);
+
+    loadCreationsCount();
     zoomSlider.addEventListener("input", () => setPhotoScale(Number(zoomSlider.value) / 100));
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
     photoStage.addEventListener("wheel", handlePhotoWheel, { passive: false });
@@ -2775,8 +2825,104 @@
         downloadLink.href = exportUrl; downloadLink.download = `${originalName}-with-info.${extension}`;
         document.body.appendChild(downloadLink); downloadLink.click(); downloadLink.remove();
         window.setTimeout(() => URL.revokeObjectURL(exportUrl), 1000);
+
+        // 下載已成功觸發；雲端計數失敗時不影響成品下載。
+        incrementCreationsCount();
       } catch (error) {
         errorMessage.textContent = "目前無法產生成品，請重新選擇照片後再試一次。";
+      }
+    }
+
+    function supabaseHeaders(extra = {}) {
+      return {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        "Content-Type": "application/json",
+        ...extra
+      };
+    }
+
+    function renderCreationsCount(value) {
+      if (!creationsCount || !creationsCounter) return;
+
+      if (Number.isFinite(value)) {
+        creationsCount.textContent = new Intl.NumberFormat("en-US").format(value);
+        creationsCounter.classList.remove("loading");
+        creationsCounter.title = `${value.toLocaleString("zh-TW")} 件作品已完成下載`;
+      } else {
+        creationsCount.textContent = "—";
+        creationsCounter.classList.add("loading");
+        creationsCounter.title = "目前無法讀取作品總數";
+      }
+    }
+
+    async function loadCreationsCount() {
+      renderCreationsCount(null);
+
+      try {
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/${STATS_TABLE}?select=id,total_creations&order=id.asc&limit=1`,
+          { headers: supabaseHeaders() }
+        );
+
+        if (!response.ok) throw new Error(`Stats read failed: ${response.status}`);
+
+        const rows = await response.json();
+
+        if (Array.isArray(rows) && rows.length > 0) {
+          statsRowId = rows[0].id ?? 1;
+          totalCreations = Number(rows[0].total_creations) || 0;
+          renderCreationsCount(totalCreations);
+          return;
+        }
+
+        // 資料表尚未有第一筆資料時，自動建立。
+        const createResponse = await fetch(
+          `${SUPABASE_URL}/rest/v1/${STATS_TABLE}`,
+          {
+            method: "POST",
+            headers: supabaseHeaders({ Prefer: "return=representation" }),
+            body: JSON.stringify({ id: 1, total_creations: 0 })
+          }
+        );
+
+        if (!createResponse.ok) throw new Error(`Stats create failed: ${createResponse.status}`);
+
+        const createdRows = await createResponse.json();
+        statsRowId = createdRows?.[0]?.id ?? 1;
+        totalCreations = Number(createdRows?.[0]?.total_creations) || 0;
+        renderCreationsCount(totalCreations);
+      } catch (error) {
+        console.warn("Creations counter unavailable:", error);
+        renderCreationsCount(null);
+      }
+    }
+
+    async function incrementCreationsCount() {
+      try {
+        if (!Number.isFinite(totalCreations)) {
+          await loadCreationsCount();
+        }
+
+        const nextCount = (Number.isFinite(totalCreations) ? totalCreations : 0) + 1;
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/${STATS_TABLE}?id=eq.${encodeURIComponent(statsRowId)}`,
+          {
+            method: "PATCH",
+            headers: supabaseHeaders({ Prefer: "return=representation" }),
+            body: JSON.stringify({ total_creations: nextCount })
+          }
+        );
+
+        if (!response.ok) throw new Error(`Stats update failed: ${response.status}`);
+
+        const rows = await response.json();
+        totalCreations = Number(rows?.[0]?.total_creations);
+
+        if (!Number.isFinite(totalCreations)) totalCreations = nextCount;
+        renderCreationsCount(totalCreations);
+      } catch (error) {
+        console.warn("Creation was downloaded, but the counter could not be updated:", error);
       }
     }
 
