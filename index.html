@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V3.3 Material Edition - proportional photo scaling, draggable image, metallic glass themes and editable signature -->
+<!-- Through Chun Chun's Lens V3.3.1 Material Edition - proportional photo scaling, draggable image, metallic glass themes and editable signature -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1425,6 +1425,9 @@
       --panel-border: rgba(255, 255, 255, 0.26);
       --panel-shadow: none;
       --panel-blur: 2px;
+      --info-scale: 1;
+      transform: scale(var(--info-scale));
+      transform-origin: left bottom;
     }
 
     .photo-toolbar {
@@ -1576,7 +1579,7 @@
 
     .info-panel.hidden {
       opacity: 0;
-      transform: translateY(10px) scale(0.985);
+      transform: translateY(10px) scale(var(--info-scale));
       pointer-events: none;
     }
 
@@ -2029,6 +2032,13 @@
               </div>
             </div>
             <div class="control-row">
+              <div class="control-label"><span>Info panel scale</span><span id="infoScaleValue">100%</span></div>
+              <div class="zoom-row">
+                <input class="zoom-slider" id="infoScaleSlider" type="range" min="50" max="200" value="100" step="1" aria-label="資訊框等比例縮放">
+                <button class="control-mini-button" id="resetInfoScaleButton" type="button">重設</button>
+              </div>
+            </div>
+            <div class="control-row">
               <div class="control-label"><span>Material</span><span id="materialName">Original Glass</span></div>
               <div class="material-swatches">
                 <button class="material-swatch swatch-default active" type="button" data-material="default" data-label="Original Glass" title="Original Glass" aria-label="Original Glass"></button>
@@ -2188,6 +2198,9 @@
     const zoomSlider = document.getElementById("zoomSlider");
     const zoomValue = document.getElementById("zoomValue");
     const resetPhotoButton = document.getElementById("resetPhotoButton");
+    const infoScaleSlider = document.getElementById("infoScaleSlider");
+    const infoScaleValue = document.getElementById("infoScaleValue");
+    const resetInfoScaleButton = document.getElementById("resetInfoScaleButton");
     const materialName = document.getElementById("materialName");
     const materialSwatches = Array.from(document.querySelectorAll(".material-swatch"));
     const signatureInput = document.getElementById("signatureInput");
@@ -2197,6 +2210,7 @@
     let currentObjectUrl = null;
     let infoVisible = true;
     let photoScale = 1;
+    let infoScale = 1;
     let photoX = 0;
     let photoY = 0;
     let photoDragging = false;
@@ -2213,6 +2227,8 @@
     fileInput.addEventListener("change", handleFileSelection);
     zoomSlider.addEventListener("input", () => setPhotoScale(Number(zoomSlider.value) / 100));
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
+    infoScaleSlider.addEventListener("input", () => setInfoScale(Number(infoScaleSlider.value) / 100));
+    resetInfoScaleButton.addEventListener("click", resetInfoPanelScale);
     photoStage.addEventListener("wheel", handlePhotoWheel, { passive: false });
     photoPreview.addEventListener("pointerdown", startPhotoDragging);
     window.addEventListener("pointermove", movePhoto);
@@ -2577,6 +2593,44 @@
       applyPhotoTransform();
     }
 
+    function applyInfoPanelScale() {
+      infoPanel.style.setProperty("--info-scale", infoScale);
+      infoScaleSlider.value = String(Math.round(infoScale * 100));
+      infoScaleValue.textContent = `${Math.round(infoScale * 100)}%`;
+      keepInfoPanelInsideStage();
+    }
+
+    function setInfoScale(nextScale) {
+      infoScale = Math.min(2, Math.max(0.5, nextScale));
+      applyInfoPanelScale();
+    }
+
+    function resetInfoPanelScale() {
+      infoScale = 1;
+      applyInfoPanelScale();
+    }
+
+    function keepInfoPanelInsideStage() {
+      if (!photoView.classList.contains("visible")) return;
+      requestAnimationFrame(() => {
+        const stageRect = photoStage.getBoundingClientRect();
+        const panelRect = infoPanel.getBoundingClientRect();
+        let left = panelRect.left - stageRect.left;
+        let top = panelRect.top - stageRect.top;
+        const maxLeft = Math.max(0, stageRect.width - panelRect.width);
+        const maxTop = Math.max(0, stageRect.height - panelRect.height);
+        const nextLeft = Math.min(Math.max(0, left), maxLeft);
+        const nextTop = Math.min(Math.max(0, top), maxTop);
+        if (Math.abs(nextLeft - left) > 0.5 || Math.abs(nextTop - top) > 0.5) {
+          infoPanel.style.left = `${nextLeft}px`;
+          infoPanel.style.top = `${nextTop}px`;
+          infoPanel.style.right = "auto";
+          infoPanel.style.bottom = "auto";
+          infoPanel.style.transformOrigin = "left top";
+        }
+      });
+    }
+
     function resetPhotoTransform() {
       photoScale = 1; photoX = 0; photoY = 0; applyPhotoTransform();
     }
@@ -2692,7 +2746,8 @@
       const panelTop = (panelRect.top - stageRect.top) * exportScale;
       const panelWidth = panelRect.width * exportScale;
       const panelHeight = panelRect.height * exportScale;
-      const radius = 18 * exportScale;
+      const panelVisualScale = infoScale;
+      const radius = 18 * exportScale * panelVisualScale;
       const themes = {
         default: ["rgba(0,0,0,.14)", "rgba(255,255,255,.30)"],
         titanium: ["rgba(94,105,109,.58)", "rgba(231,238,239,.58)"],
@@ -2709,21 +2764,21 @@
       context.fillStyle = fill; context.fill();
       context.shadowColor = "transparent"; context.lineWidth = Math.max(1, 1.2 * exportScale); context.strokeStyle = border; context.stroke();
 
-      const paddingX = 20 * exportScale; let currentY = panelTop + 22 * exportScale; const contentWidth = panelWidth - paddingX * 2;
+      const paddingX = 20 * exportScale * panelVisualScale; let currentY = panelTop + 22 * exportScale * panelVisualScale; const contentWidth = panelWidth - paddingX * 2;
       context.fillStyle = "rgba(255,255,255,.48)";
-      roundedRect(context, panelLeft + panelWidth / 2 - 19 * exportScale, currentY, 38 * exportScale, 4 * exportScale, 2 * exportScale); context.fill();
-      currentY += 28 * exportScale;
+      roundedRect(context, panelLeft + panelWidth / 2 - 19 * exportScale * panelVisualScale, currentY, 38 * exportScale * panelVisualScale, 4 * exportScale * panelVisualScale, 2 * exportScale * panelVisualScale); context.fill();
+      currentY += 28 * exportScale * panelVisualScale;
       const cameraText = cameraLine.textContent.trim(); const basicText = basicLine.textContent.trim(); const settingsText = settingsLine.textContent.trim();
       if (cameraText) {
-        context.font = `650 ${15 * exportScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.99)";
-        currentY = drawWrappedText(context, cameraText, panelLeft + paddingX, currentY, contentWidth, 22 * exportScale); currentY += 7 * exportScale;
+        context.font = `650 ${15 * exportScale * panelVisualScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.99)";
+        currentY = drawWrappedText(context, cameraText, panelLeft + paddingX, currentY, contentWidth, 22 * exportScale * panelVisualScale); currentY += 7 * exportScale * panelVisualScale;
       }
-      context.font = `500 ${13 * exportScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.84)";
-      if (basicText) { currentY = drawWrappedText(context, basicText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale); currentY += 7 * exportScale; }
-      if (settingsText) { currentY = drawWrappedText(context, settingsText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale); currentY += 13 * exportScale; }
+      context.font = `500 ${13 * exportScale * panelVisualScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.84)";
+      if (basicText) { currentY = drawWrappedText(context, basicText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale * panelVisualScale); currentY += 7 * exportScale * panelVisualScale; }
+      if (settingsText) { currentY = drawWrappedText(context, settingsText, panelLeft + paddingX, currentY, contentWidth, 20 * exportScale * panelVisualScale); currentY += 13 * exportScale * panelVisualScale; }
       context.beginPath(); context.moveTo(panelLeft + paddingX, currentY); context.lineTo(panelLeft + panelWidth - paddingX, currentY);
-      context.lineWidth = Math.max(1, exportScale); context.strokeStyle = "rgba(255,255,255,.22)"; context.stroke(); currentY += 18 * exportScale;
-      context.font = `450 ${11 * exportScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.72)";
+      context.lineWidth = Math.max(1, exportScale * panelVisualScale); context.strokeStyle = "rgba(255,255,255,.22)"; context.stroke(); currentY += 18 * exportScale * panelVisualScale;
+      context.font = `450 ${11 * exportScale * panelVisualScale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`; context.fillStyle = "rgba(255,255,255,.72)";
       context.fillText(signatureName.textContent.trim(), panelLeft + paddingX, currentY);
       context.restore();
     }
@@ -2770,6 +2825,7 @@
       infoPanel.style.top = "";
       infoPanel.style.bottom = "";
       infoPanel.style.right = "";
+      infoPanel.style.transformOrigin = "left bottom";
     }
 
     let dragging = false;
@@ -2837,6 +2893,7 @@
       infoPanel.style.top = `${nextTop}px`;
       infoPanel.style.right = "auto";
       infoPanel.style.bottom = "auto";
+      infoPanel.style.transformOrigin = "left top";
 
       event.preventDefault();
     }
@@ -2859,6 +2916,7 @@
     updateSignature();
     setMaterial("default", "Original Glass");
     applyPhotoTransform();
+    applyInfoPanelScale();
 
     ["dragenter", "dragover"].forEach((eventName) => {
       uploadCard.addEventListener(eventName, (event) => {
