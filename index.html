@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V3.3.1 Material Edition - proportional photo scaling, draggable image, metallic glass themes and editable signature -->
+<!-- Through Chun Chun's Lens V3.4 Corner Resize Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1592,6 +1592,56 @@
       background: rgba(255, 255, 255, 0.44);
     }
 
+    .resize-handle {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      z-index: 4;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      cursor: nwse-resize;
+      touch-action: none;
+      opacity: 0.34;
+      transition: opacity 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .resize-handle::before,
+    .resize-handle::after {
+      content: "";
+      position: absolute;
+      right: 5px;
+      bottom: 5px;
+      width: 12px;
+      height: 12px;
+      border-right: 1.5px solid rgba(255,255,255,.9);
+      border-bottom: 1.5px solid rgba(255,255,255,.9);
+      border-radius: 0 0 3px 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.28));
+    }
+
+    .resize-handle::after {
+      right: 10px;
+      bottom: 10px;
+      width: 5px;
+      height: 5px;
+      opacity: .64;
+    }
+
+    .info-panel:hover .resize-handle,
+    .info-panel:focus-within .resize-handle,
+    .info-panel.resizing .resize-handle {
+      opacity: 1;
+      background: rgba(255,255,255,.10);
+    }
+
+    .resize-handle:hover { transform: scale(1.06); }
+    .resize-handle:focus-visible { outline: 2px solid rgba(255,255,255,.85); outline-offset: 2px; }
+    .info-panel.resizing { cursor: nwse-resize; transition: none; }
+
     .metadata-stack {
       display: grid;
       gap: 8px;
@@ -2032,13 +2082,6 @@
               </div>
             </div>
             <div class="control-row">
-              <div class="control-label"><span>Info panel scale</span><span id="infoScaleValue">100%</span></div>
-              <div class="zoom-row">
-                <input class="zoom-slider" id="infoScaleSlider" type="range" min="50" max="200" value="100" step="1" aria-label="資訊框等比例縮放">
-                <button class="control-mini-button" id="resetInfoScaleButton" type="button">重設</button>
-              </div>
-            </div>
-            <div class="control-row">
               <div class="control-label"><span>Material</span><span id="materialName">Original Glass</span></div>
               <div class="material-swatches">
                 <button class="material-swatch swatch-default active" type="button" data-material="default" data-label="Original Glass" title="Original Glass" aria-label="Original Glass"></button>
@@ -2062,6 +2105,7 @@
             aria-label="照片資訊"
           >
             <div class="drag-handle" aria-hidden="true"></div>
+            <button class="resize-handle" id="resizeHandle" type="button" aria-label="拖曳右下角調整資訊框大小" title="拖曳調整資訊框大小"></button>
 
             <div class="metadata-stack">
               <p class="metadata-line camera-line hidden" id="cameraLine"></p>
@@ -2198,9 +2242,7 @@
     const zoomSlider = document.getElementById("zoomSlider");
     const zoomValue = document.getElementById("zoomValue");
     const resetPhotoButton = document.getElementById("resetPhotoButton");
-    const infoScaleSlider = document.getElementById("infoScaleSlider");
-    const infoScaleValue = document.getElementById("infoScaleValue");
-    const resetInfoScaleButton = document.getElementById("resetInfoScaleButton");
+    const resizeHandle = document.getElementById("resizeHandle");
     const materialName = document.getElementById("materialName");
     const materialSwatches = Array.from(document.querySelectorAll(".material-swatch"));
     const signatureInput = document.getElementById("signatureInput");
@@ -2227,8 +2269,6 @@
     fileInput.addEventListener("change", handleFileSelection);
     zoomSlider.addEventListener("input", () => setPhotoScale(Number(zoomSlider.value) / 100));
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
-    infoScaleSlider.addEventListener("input", () => setInfoScale(Number(infoScaleSlider.value) / 100));
-    resetInfoScaleButton.addEventListener("click", resetInfoPanelScale);
     photoStage.addEventListener("wheel", handlePhotoWheel, { passive: false });
     photoPreview.addEventListener("pointerdown", startPhotoDragging);
     window.addEventListener("pointermove", movePhoto);
@@ -2271,6 +2311,7 @@
 
       photoPreview.onload = () => {
         resetInfoPanelPosition();
+        resetInfoPanelScale();
         resetPhotoTransform();
       };
 
@@ -2595,8 +2636,7 @@
 
     function applyInfoPanelScale() {
       infoPanel.style.setProperty("--info-scale", infoScale);
-      infoScaleSlider.value = String(Math.round(infoScale * 100));
-      infoScaleValue.textContent = `${Math.round(infoScale * 100)}%`;
+      infoPanel.setAttribute("data-scale", `${Math.round(infoScale * 100)}%`);
       keepInfoPanelInsideStage();
     }
 
@@ -2831,14 +2871,28 @@
     let dragging = false;
     let pointerOffsetX = 0;
     let pointerOffsetY = 0;
+    let resizing = false;
+    let resizeStartX = 0;
+    let resizeStartY = 0;
+    let resizeStartScale = 1;
+    let resizeBaseWidth = 1;
+    let resizeBaseHeight = 1;
 
     infoPanel.addEventListener("pointerdown", startDragging);
+    infoPanel.addEventListener("dblclick", (event) => {
+      if (event.target === resizeHandle) return;
+      resetInfoPanelScale();
+    });
+    resizeHandle.addEventListener("pointerdown", startResizing);
     window.addEventListener("pointermove", movePanel);
+    window.addEventListener("pointermove", resizePanel);
     window.addEventListener("pointerup", stopDragging);
+    window.addEventListener("pointerup", stopResizing);
     window.addEventListener("pointercancel", stopDragging);
+    window.addEventListener("pointercancel", stopResizing);
 
     function startDragging(event) {
-      if (!infoVisible) {
+      if (!infoVisible || resizing || event.target === resizeHandle || event.target.closest?.(".resize-handle")) {
         return;
       }
 
@@ -2857,6 +2911,41 @@
       }
 
       event.preventDefault();
+    }
+
+    function startResizing(event) {
+      if (!infoVisible) return;
+      resizing = true;
+      dragging = false;
+      infoPanel.classList.remove("dragging");
+      infoPanel.classList.add("resizing");
+      const panelRect = infoPanel.getBoundingClientRect();
+      resizeStartX = event.clientX;
+      resizeStartY = event.clientY;
+      resizeStartScale = infoScale;
+      resizeBaseWidth = Math.max(1, panelRect.width / infoScale);
+      resizeBaseHeight = Math.max(1, panelRect.height / infoScale);
+      try { resizeHandle.setPointerCapture(event.pointerId); } catch (error) {}
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    function resizePanel(event) {
+      if (!resizing) return;
+      const deltaX = event.clientX - resizeStartX;
+      const deltaY = event.clientY - resizeStartY;
+      const widthScale = (resizeBaseWidth * resizeStartScale + deltaX) / resizeBaseWidth;
+      const heightScale = (resizeBaseHeight * resizeStartScale + deltaY) / resizeBaseHeight;
+      const nextScale = Math.max(widthScale, heightScale);
+      setInfoScale(nextScale);
+      event.preventDefault();
+    }
+
+    function stopResizing(event) {
+      if (!resizing) return;
+      resizing = false;
+      infoPanel.classList.remove("resizing");
+      try { resizeHandle.releasePointerCapture(event.pointerId); } catch (error) {}
     }
 
     function movePanel(event) {
