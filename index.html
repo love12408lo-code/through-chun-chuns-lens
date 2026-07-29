@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V6.3 True Proportional Card & Deployment-ready Icon Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V6.4 Independent Controls & True Proportional Card Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -3222,6 +3222,98 @@
       }
     }
 
+
+    /* V6.4 — independent controls and Safari-safe proportional info card */
+    .photo-preview {
+      cursor: default !important;
+      pointer-events: none !important;
+      touch-action: auto !important;
+    }
+
+    .info-panel {
+      --card-scale: .72;
+      --card-width: 461px;
+      --card-pad-y: 16px;
+      --card-pad-x: 20px;
+      --card-pad-bottom: 18px;
+      --card-radius: 14px;
+      --handle-width: 27px;
+      --handle-height: 3px;
+      --handle-margin: 11px;
+      --stack-gap: 6px;
+      --camera-font: 14px;
+      --detail-font: 12px;
+      --signature-font: 9px;
+      --signature-margin: 9px;
+      --signature-padding: 9px;
+      width: var(--card-width) !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      padding: var(--card-pad-y) var(--card-pad-x) var(--card-pad-bottom) !important;
+      border-radius: var(--card-radius) !important;
+      transform: none !important;
+      transform-origin: left bottom !important;
+      overflow: hidden !important;
+    }
+
+    .info-panel.hidden {
+      transform: translateY(10px) !important;
+    }
+
+    .info-panel .drag-handle {
+      width: var(--handle-width);
+      height: var(--handle-height);
+      margin: 0 auto var(--handle-margin);
+    }
+
+    .info-panel .metadata-stack {
+      gap: var(--stack-gap);
+    }
+
+    .info-panel .metadata-line,
+    .info-panel .camera-line,
+    .info-panel .secondary-line,
+    .info-panel .settings-line,
+    .info-panel .signature-name {
+      width: 100% !important;
+      max-width: 100% !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      overflow-wrap: normal !important;
+      word-break: normal !important;
+      hyphens: none !important;
+    }
+
+    .info-panel .camera-line {
+      font-size: var(--camera-font) !important;
+      line-height: 1.35 !important;
+    }
+
+    .info-panel .secondary-line,
+    .info-panel .settings-line {
+      font-size: var(--detail-font) !important;
+      line-height: 1.48 !important;
+    }
+
+    .info-panel .signature {
+      margin-top: var(--signature-margin);
+      padding-top: var(--signature-padding);
+    }
+
+    .info-panel .signature-name {
+      font-size: var(--signature-font) !important;
+      line-height: 1.4 !important;
+    }
+
+    .resize-handle { display: none !important; }
+
+    @media (max-width: 720px) {
+      .info-panel {
+        left: 14px;
+        bottom: 14px;
+      }
+    }
+
   </style>
 </head>
 
@@ -3535,6 +3627,13 @@
               </div>
             </div>
             <div class="control-row">
+              <div class="control-label"><span>Info card size</span><span id="infoScaleValue">72%</span></div>
+              <div class="zoom-row">
+                <input class="zoom-slider" id="infoScaleSlider" type="range" min="40" max="110" value="72" step="1" aria-label="資訊卡等比例縮放">
+                <button class="control-mini-button" id="resetInfoButton" type="button">重設</button>
+              </div>
+            </div>
+            <div class="control-row">
               <div class="control-label"><span>Material</span><span id="materialName">Original Glass</span></div>
               <div class="material-swatches">
                 <button class="material-swatch swatch-default active" type="button" data-material="default" data-label="Original Glass" title="Original Glass" aria-label="Original Glass"></button>
@@ -3573,7 +3672,7 @@
             aria-label="照片資訊"
           >
             <div class="drag-handle" aria-hidden="true"></div>
-            <button class="resize-handle" id="resizeHandle" type="button" aria-label="拖曳右下角調整資訊框大小" title="拖曳調整資訊框大小"></button>
+            <button class="resize-handle" id="resizeHandle" type="button" hidden aria-hidden="true" tabindex="-1"></button>
 
             <div class="metadata-stack">
               <p class="metadata-line camera-line hidden" id="cameraLine"></p>
@@ -3820,6 +3919,9 @@
     const zoomValue = document.getElementById("zoomValue");
     const resetPhotoButton = document.getElementById("resetPhotoButton");
     const resizeHandle = document.getElementById("resizeHandle");
+    const infoScaleSlider = document.getElementById("infoScaleSlider");
+    const infoScaleValue = document.getElementById("infoScaleValue");
+    const resetInfoButton = document.getElementById("resetInfoButton");
     const materialName = document.getElementById("materialName");
     const materialSwatches = Array.from(document.querySelectorAll(".material-swatch"));
     const signatureInput = document.getElementById("signatureInput");
@@ -3829,7 +3931,7 @@
     let currentObjectUrl = null;
     let infoVisible = true;
     let photoScale = 1;
-    let infoScale = 1;
+    let infoScale = 0.72;
     let photoX = 0;
     let photoY = 0;
     let photoDragging = false;
@@ -3848,13 +3950,12 @@
     loadCreationsCount();
     zoomSlider.addEventListener("input", () => setPhotoScale(Number(zoomSlider.value) / 100));
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
-    photoStage.addEventListener("wheel", handlePhotoWheel, { passive: false });
-    photoPreview.addEventListener("pointerdown", startPhotoDragging);
-    window.addEventListener("pointermove", movePhoto);
-    window.addEventListener("pointerup", stopPhotoDragging);
-    window.addEventListener("pointercancel", stopPhotoDragging);
+    // 照片只由上方縮放滑桿控制，避免移動資訊卡時誤觸照片。
+    infoScaleSlider.addEventListener("input", () => setInfoScale(Number(infoScaleSlider.value) / 100));
+    resetInfoButton.addEventListener("click", () => setInfoScale(0.72));
     signatureInput.addEventListener("input", updateSignature);
     materialSwatches.forEach((button) => button.addEventListener("click", () => setMaterial(button.dataset.material, button.dataset.label)));
+    applyInfoPanelScale();
 
     function openFilePicker() {
       fileInput.value = "";
@@ -4214,29 +4315,45 @@
     }
 
     function applyInfoPanelScale() {
-      infoPanel.style.setProperty("--info-scale", infoScale);
+      const px = (value, minimum = 0) => `${Math.max(minimum, Math.round(value * infoScale * 10) / 10)}px`;
+      infoPanel.style.setProperty("--card-scale", infoScale);
+      infoPanel.style.setProperty("--card-width", px(640, 256));
+      infoPanel.style.setProperty("--card-pad-y", px(22, 9));
+      infoPanel.style.setProperty("--card-pad-x", px(28, 11));
+      infoPanel.style.setProperty("--card-pad-bottom", px(25, 10));
+      infoPanel.style.setProperty("--card-radius", px(20, 8));
+      infoPanel.style.setProperty("--handle-width", px(38, 15));
+      infoPanel.style.setProperty("--handle-height", px(4, 2));
+      infoPanel.style.setProperty("--handle-margin", px(15, 6));
+      infoPanel.style.setProperty("--stack-gap", px(8, 3));
+      infoPanel.style.setProperty("--camera-font", px(20, 8));
+      infoPanel.style.setProperty("--detail-font", px(16, 7));
+      infoPanel.style.setProperty("--signature-font", px(12, 6));
+      infoPanel.style.setProperty("--signature-margin", px(13, 5));
+      infoPanel.style.setProperty("--signature-padding", px(12, 5));
       infoPanel.setAttribute("data-scale", `${Math.round(infoScale * 100)}%`);
+      if (infoScaleSlider) infoScaleSlider.value = String(Math.round(infoScale * 100));
+      if (infoScaleValue) infoScaleValue.textContent = `${Math.round(infoScale * 100)}%`;
       keepInfoPanelInsideStage();
     }
 
     function setInfoScale(nextScale) {
-      infoScale = Math.min(1.6, Math.max(0.22, nextScale));
+      infoScale = Math.min(1.10, Math.max(0.40, nextScale));
       applyInfoPanelScale();
     }
 
     function resetInfoPanelScale() {
-      infoScale = 1;
-      applyInfoPanelScale();
+      setInfoScale(0.72);
     }
 
     function fitInfoPanelToStage({ onlyShrink = true } = {}) {
       if (!photoStage) return;
       const stageWidth = Math.max(1, photoStage.clientWidth);
-      const safeWidth = Math.max(180, stageWidth - 32);
-      const naturalWidth = 760;
-      const fittedScale = Math.min(1, safeWidth / naturalWidth);
+      const safeWidth = Math.max(180, stageWidth - 28);
+      const naturalWidth = 640;
+      const fittedScale = Math.min(1.10, safeWidth / naturalWidth);
       if (!onlyShrink || infoScale > fittedScale) {
-        infoScale = Math.max(0.22, fittedScale);
+        infoScale = Math.max(0.40, fittedScale);
         applyInfoPanelScale();
       }
     }
@@ -4267,9 +4384,7 @@
     }
 
     function handlePhotoWheel(event) {
-      if (!photoView.classList.contains("visible")) return;
-      event.preventDefault();
-      setPhotoScale(photoScale + (event.deltaY < 0 ? 0.08 : -0.08));
+      // V6.4：照片縮放僅使用控制面板滑桿。
     }
 
     function startPhotoDragging(event) {
@@ -4608,20 +4723,12 @@
     let resizeBaseHeight = 1;
 
     infoPanel.addEventListener("pointerdown", startDragging);
-    infoPanel.addEventListener("dblclick", (event) => {
-      if (event.target === resizeHandle) return;
-      resetInfoPanelScale();
-    });
-    resizeHandle.addEventListener("pointerdown", startResizing);
     window.addEventListener("pointermove", movePanel);
-    window.addEventListener("pointermove", resizePanel);
     window.addEventListener("pointerup", stopDragging);
-    window.addEventListener("pointerup", stopResizing);
     window.addEventListener("pointercancel", stopDragging);
-    window.addEventListener("pointercancel", stopResizing);
 
     function startDragging(event) {
-      if (!infoVisible || resizing || event.target === resizeHandle || event.target.closest?.(".resize-handle")) {
+      if (!infoVisible || resizing || event.target.closest?.(".studio-controls")) {
         return;
       }
 
