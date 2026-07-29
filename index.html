@@ -3317,7 +3317,7 @@
   
 
     /* =========================
-       V6.5 — Clean export crop + ratio presets + install card flow fix
+       V6.6 — Auto original canvas + photo-first output
        ========================= */
     .ratio-select {
       width: 100%;
@@ -3354,6 +3354,35 @@
 
     /* The guide is only a preview aid and must never appear in exports. */
     .exporting .export-guide { display: none !important; }
+
+    /* V6.6: the visible canvas follows the selected output ratio.
+       Original mode reads the uploaded image dimensions automatically. */
+    .photo-stage {
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      aspect-ratio: var(--stage-ratio, 3 / 2);
+      margin: 0 auto;
+    }
+
+    .photo-preview {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: contain;
+    }
+
+    .photo-stage[data-crop-mode="crop"] .photo-preview {
+      object-fit: cover;
+    }
+
+    .ratio-hint {
+      margin-top: 7px;
+      color: rgba(255,255,255,.58);
+      font-size: 10px;
+      line-height: 1.45;
+    }
 
     /* Let every install card grow naturally; the illustration can no longer cover the copy. */
     .install-card {
@@ -3694,9 +3723,9 @@
 
           <div class="studio-controls" aria-label="照片與資訊框設定">
             <div class="control-row">
-              <div class="control-label"><span>Photo scale</span><span id="zoomValue">100%</span></div>
+              <div class="control-label"><span>Photo zoom</span><span id="zoomValue">100%</span></div>
               <div class="zoom-row">
-                <input class="zoom-slider" id="zoomSlider" type="range" min="50" max="300" value="100" step="1" aria-label="照片等比例縮放">
+                <input class="zoom-slider" id="zoomSlider" type="range" min="100" max="300" value="100" step="1" aria-label="照片等比例縮放">
                 <button class="control-mini-button" id="resetPhotoButton" type="button">重設</button>
               </div>
             </div>
@@ -3708,14 +3737,16 @@
               </div>
             </div>
             <div class="control-row">
-              <label class="control-label" for="outputRatio"><span>Output ratio</span><span id="outputRatioLabel">原始照片</span></label>
+              <label class="control-label" for="outputRatio"><span>Output ratio</span><span id="outputRatioLabel">自動偵測</span></label>
               <select class="ratio-select" id="outputRatio" aria-label="下載成品比例">
-                <option value="photo">原始照片（不留黑框）</option>
-                <option value="4:3">4 : 3</option>
-                <option value="3:2">3 : 2</option>
-                <option value="16:9">16 : 9</option>
-                <option value="1:1">1 : 1</option>
+                <option value="photo">依照原始照片（自動）</option>
+                <option value="3:2">相機橫幅 3 : 2</option>
+                <option value="4:3">經典橫幅 4 : 3</option>
+                <option value="16:9">寬螢幕 16 : 9</option>
+                <option value="1:1">正方形 1 : 1</option>
+                <option value="4:5">直式社群 4 : 5</option>
               </select>
+              <div class="ratio-hint" id="ratioHint">上傳照片後會自動顯示原始比例。</div>
             </div>
             <div class="control-row">
               <div class="control-label"><span>Material</span><span id="materialName">Original Glass</span></div>
@@ -4010,6 +4041,7 @@
     const resetInfoButton = document.getElementById("resetInfoButton");
     const outputRatio = document.getElementById("outputRatio");
     const outputRatioLabel = document.getElementById("outputRatioLabel");
+    const ratioHint = document.getElementById("ratioHint");
     const exportGuide = document.getElementById("exportGuide");
     const materialName = document.getElementById("materialName");
     const materialSwatches = Array.from(document.querySelectorAll(".material-swatch"));
@@ -4020,6 +4052,8 @@
     let currentObjectUrl = null;
     let infoVisible = true;
     let photoScale = 1;
+    let originalImageWidth = 3;
+    let originalImageHeight = 2;
     let infoScale = 0.72;
     let photoX = 0;
     let photoY = 0;
@@ -4043,9 +4077,7 @@
     infoScaleSlider.addEventListener("input", () => setInfoScale(Number(infoScaleSlider.value) / 100));
     resetInfoButton.addEventListener("click", () => setInfoScale(0.72));
     outputRatio.addEventListener("change", () => {
-      const labels = { photo: "原始照片", "4:3": "4 : 3", "3:2": "3 : 2", "16:9": "16 : 9", "1:1": "1 : 1" };
-      outputRatioLabel.textContent = labels[outputRatio.value] || "原始照片";
-      updateExportGuide();
+      applyOutputRatio();
     });
     signatureInput.addEventListener("input", updateSignature);
     materialSwatches.forEach((button) => button.addEventListener("click", () => setMaterial(button.dataset.material, button.dataset.label)));
@@ -4085,9 +4117,14 @@
       currentObjectUrl = URL.createObjectURL(file);
 
       photoPreview.onload = () => {
+        originalImageWidth = photoPreview.naturalWidth || 3;
+        originalImageHeight = photoPreview.naturalHeight || 2;
         resetInfoPanelPosition();
         resetInfoPanelScale();
-        resetPhotoTransform();
+        photoScale = 1;
+        photoX = 0;
+        photoY = 0;
+        applyOutputRatio();
       };
 
       photoPreview.onerror = () => {
@@ -4406,7 +4443,7 @@
     }
 
     function setPhotoScale(nextScale) {
-      photoScale = Math.min(3, Math.max(0.5, nextScale));
+      photoScale = Math.min(3, Math.max(1, nextScale));
       applyPhotoTransform();
     }
 
@@ -4480,17 +4517,12 @@
     }
 
     function handlePhotoWheel(event) {
-      // V6.5：照片縮放僅使用控制面板滑桿。
+      // V6.6：照片縮放僅使用控制面板滑桿。
     }
 
     function startPhotoDragging(event) {
-      if (event.button !== undefined && event.button !== 0) return;
-      photoDragging = true;
-      photoPointerStartX = event.clientX; photoPointerStartY = event.clientY;
-      photoOriginX = photoX; photoOriginY = photoY;
-      photoPreview.classList.add("dragging");
-      try { photoPreview.setPointerCapture(event.pointerId); } catch (error) {}
-      event.preventDefault();
+      // V6.6：照片不接受手勢拖曳，避免與資訊卡操作互相干擾。
+      return;
     }
 
     function movePhoto(event) {
@@ -4556,6 +4588,74 @@
       };
     }
 
+    function greatestCommonDivisor(a, b) {
+      a = Math.max(1, Math.round(a));
+      b = Math.max(1, Math.round(b));
+      while (b) [a, b] = [b, a % b];
+      return a;
+    }
+
+    function readableRatio(width, height) {
+      const value = width / height;
+      const standards = [
+        [1, 1], [4, 5], [3, 4], [4, 3], [3, 2], [2, 3], [16, 9], [9, 16]
+      ];
+      const matched = standards.find(([w, h]) => Math.abs(value - w / h) < 0.025);
+      if (matched) return `${matched[0]}:${matched[1]}`;
+      const divisor = greatestCommonDivisor(width, height);
+      const w = Math.round(width / divisor);
+      const h = Math.round(height / divisor);
+      return (w <= 30 && h <= 30) ? `${w}:${h}` : `${value.toFixed(2)}:1`;
+    }
+
+    function selectedRatioNumber() {
+      if (!outputRatio || outputRatio.value === "photo") {
+        return Math.max(0.1, originalImageWidth / originalImageHeight);
+      }
+      return ratioNumber(outputRatio.value) || (originalImageWidth / originalImageHeight);
+    }
+
+    function updateStageDimensions() {
+      if (!photoStage || !photoView.classList.contains("visible")) return;
+      const ratio = selectedRatioNumber();
+      const availableWidth = Math.max(240, photoView.clientWidth || workspace.clientWidth || 900);
+      const maxHeight = Math.min(window.innerHeight * 0.76, 820);
+      let width = availableWidth;
+      let height = width / ratio;
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * ratio;
+      }
+      photoStage.style.width = `${Math.floor(width)}px`;
+      photoStage.style.height = `${Math.floor(height)}px`;
+      photoStage.style.aspectRatio = String(ratio);
+    }
+
+    function applyOutputRatio() {
+      const ratio = selectedRatioNumber();
+      photoStage.style.setProperty("--stage-ratio", String(ratio));
+      updateStageDimensions();
+      const originalText = readableRatio(originalImageWidth, originalImageHeight);
+      if (outputRatio.value === "photo") {
+        outputRatioLabel.textContent = `原始 ${originalText}`;
+        if (ratioHint) ratioHint.textContent = `${originalImageWidth} × ${originalImageHeight}，畫布會跟著照片，不裁切、不留黑框。`;
+        photoStage.dataset.cropMode = "contain";
+      } else {
+        outputRatioLabel.textContent = outputRatio.value.replace(":", " : ");
+        if (ratioHint) ratioHint.textContent = `畫布固定為 ${outputRatio.value}，照片會填滿畫布，超出的邊緣會被裁切。`;
+        photoStage.dataset.cropMode = "crop";
+      }
+      photoX = 0;
+      photoY = 0;
+      photoScale = 1;
+      applyPhotoTransform();
+      requestAnimationFrame(() => {
+        fitInfoPanelToStage({ onlyShrink: true });
+        keepInfoPanelInsideStage();
+        updateExportGuide();
+      });
+    }
+
     function ratioNumber(value) {
       if (!value || value === "photo") return null;
       const [w, h] = value.split(":").map(Number);
@@ -4563,20 +4663,15 @@
     }
 
     function getExportRect() {
-      const base = getVisiblePhotoRect();
-      const ratio = ratioNumber(outputRatio?.value);
-      if (!ratio) return base;
-
-      let width = base.width;
-      let height = width / ratio;
-      if (height > base.height) {
-        height = base.height;
-        width = height * ratio;
-      }
-
-      const left = base.left + (base.width - width) / 2;
-      const top = base.top + (base.height - height) / 2;
-      return { left, top, right: left + width, bottom: top + height, width, height };
+      const stageRect = photoStage.getBoundingClientRect();
+      return {
+        left: stageRect.left,
+        top: stageRect.top,
+        right: stageRect.right,
+        bottom: stageRect.bottom,
+        width: Math.max(1, stageRect.width),
+        height: Math.max(1, stageRect.height)
+      };
     }
 
     function updateExportGuide() {
@@ -4587,14 +4682,13 @@
       exportGuide.style.top = `${rect.top - stageRect.top}px`;
       exportGuide.style.width = `${rect.width}px`;
       exportGuide.style.height = `${rect.height}px`;
-      exportGuide.classList.toggle("visible", outputRatio?.value !== "photo");
+      exportGuide.classList.remove("visible");
     }
 
     async function downloadOriginalPhoto() {
       if (!currentFile || !currentObjectUrl || !photoPreview.complete) return;
       try {
         document.body.classList.add("exporting");
-        const imageRect = photoPreview.getBoundingClientRect();
         const exportRect = getExportRect();
         const exportScale = Math.min(3, Math.max(1.5, 3000 / Math.max(exportRect.width, exportRect.height)));
         const canvas = document.createElement("canvas");
@@ -4603,13 +4697,36 @@
         const context = canvas.getContext("2d");
         if (!context) throw new Error("Canvas unavailable");
 
-        // Draw only the visible photograph (or the selected centered ratio crop).
-        // No stage background is exported, so there are no black bars.
-        const drawX = (imageRect.left - exportRect.left) * exportScale;
-        const drawY = (imageRect.top - exportRect.top) * exportScale;
-        const drawW = imageRect.width * exportScale;
-        const drawH = imageRect.height * exportScale;
-        context.drawImage(photoPreview, drawX, drawY, drawW, drawH);
+        // Render the image directly into the output canvas. Original mode preserves the
+        // uploaded ratio exactly; preset modes use a centered cover crop.
+        const sourceW = photoPreview.naturalWidth || originalImageWidth;
+        const sourceH = photoPreview.naturalHeight || originalImageHeight;
+        const outputW = canvas.width;
+        const outputH = canvas.height;
+        const sourceRatio = sourceW / sourceH;
+        const outputRatioNumber = outputW / outputH;
+
+        let sx = 0, sy = 0, sw = sourceW, sh = sourceH;
+        if (outputRatio?.value !== "photo") {
+          if (sourceRatio > outputRatioNumber) {
+            sw = sourceH * outputRatioNumber;
+            sx = (sourceW - sw) / 2;
+          } else {
+            sh = sourceW / outputRatioNumber;
+            sy = (sourceH - sh) / 2;
+          }
+        }
+
+        // Photo zoom is a centered crop only. 100% always fills the selected canvas,
+        // so the finished image can never contain the studio's black background.
+        const zoom = Math.max(1, photoScale || 1);
+        const zoomedW = sw / zoom;
+        const zoomedH = sh / zoom;
+        sx += (sw - zoomedW) / 2;
+        sy += (sh - zoomedH) / 2;
+        sw = zoomedW;
+        sh = zoomedH;
+        context.drawImage(photoPreview, sx, sy, sw, sh, 0, 0, outputW, outputH);
 
         if (infoVisible && !infoPanel.classList.contains("hidden")) {
           await drawInfoPanelOnCanvas(context, exportRect, exportScale);
@@ -4618,7 +4735,7 @@
         const mimeType = currentFile.type === "image/png" ? "image/png" : "image/jpeg";
         const extension = mimeType === "image/png" ? "png" : "jpg";
         const originalName = currentFile.name.replace(/\.[^.]+$/, "") || "photograph";
-        const ratioSuffix = outputRatio?.value && outputRatio.value !== "photo" ? `-${outputRatio.value.replace(":", "x")}` : "";
+        const ratioSuffix = outputRatio?.value === "photo" ? `-${readableRatio(originalImageWidth, originalImageHeight).replace(":", "x")}` : `-${outputRatio.value.replace(":", "x")}`;
         const blob = await new Promise((resolve, reject) => canvas.toBlob(result => result ? resolve(result) : reject(new Error("Export failed")), mimeType, 0.95));
         const exportUrl = URL.createObjectURL(blob);
         const downloadLink = document.createElement("a");
@@ -5021,6 +5138,7 @@
   
 
     window.addEventListener("resize", () => {
+      updateStageDimensions();
       fitInfoPanelToStage({ onlyShrink: true });
       keepInfoPanelInsideStage();
     });
