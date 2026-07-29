@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V6.8 Refined Materials Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V6.9 Light Reflection Materials Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1607,59 +1607,96 @@
       background: var(--panel-bg-hover);
     }
 
-    /* Refined materials: same glass language, only a restrained tint changes. */
+    /* V6.9 — Light-reflection materials.
+       The glass body stays almost identical to Original; only reflected light,
+       edge tone and shadow character change. */
+    .info-panel::after {
+      content: "";
+      position: absolute;
+      inset: -28% -18%;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: 42%;
+      background:
+        radial-gradient(circle at var(--reflection-x, 22%) var(--reflection-y, 12%),
+          var(--reflection-color, rgba(255,255,255,0)) 0%,
+          transparent 46%);
+      opacity: var(--reflection-opacity, 0);
+      transform: rotate(var(--reflection-rotate, -8deg));
+      mix-blend-mode: screen;
+    }
+
+    .info-panel.material-titanium,
+    .info-panel.material-black,
+    .info-panel.material-starlight,
+    .info-panel.material-ocean,
+    .info-panel.material-forest,
+    .info-panel.material-gold {
+      --panel-bg: rgba(13, 18, 20, 0.09);
+      --panel-bg-hover: rgba(13, 18, 20, 0.13);
+      --panel-blur: 16px;
+      --panel-highlight: rgba(255,255,255,.12);
+      --panel-text-shadow: 0 1px 3px rgba(0,0,0,.58);
+    }
+
     .info-panel.material-titanium {
-      --panel-bg: rgba(116, 126, 130, 0.28);
-      --panel-bg-hover: rgba(116, 126, 130, 0.34);
-      --panel-border: rgba(232, 237, 238, 0.42);
-      --panel-shadow: 0 16px 38px rgba(7, 15, 18, 0.17), inset 0 1px 0 rgba(255,255,255,.30);
-      --panel-blur: 18px;
-      --panel-highlight: rgba(248, 251, 251, 0.16);
+      --panel-border: rgba(226, 233, 235, 0.34);
+      --panel-shadow: 0 16px 38px rgba(5, 14, 17, .14), inset 0 1px 0 rgba(255,255,255,.25);
+      --reflection-color: rgba(219, 231, 234, .20);
+      --reflection-opacity: .72;
+      --reflection-x: 18%;
+      --reflection-y: 7%;
     }
 
     .info-panel.material-black {
-      --panel-bg: rgba(12, 15, 17, 0.52);
-      --panel-bg-hover: rgba(12, 15, 17, 0.60);
-      --panel-border: rgba(214, 220, 222, 0.22);
-      --panel-shadow: 0 18px 42px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.10);
-      --panel-blur: 18px;
-      --panel-highlight: rgba(255,255,255,.08);
+      --panel-bg: rgba(7, 10, 12, 0.18);
+      --panel-bg-hover: rgba(7, 10, 12, 0.23);
+      --panel-border: rgba(219, 224, 226, 0.18);
+      --panel-shadow: 0 19px 44px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.08);
+      --panel-highlight: rgba(255,255,255,.055);
+      --reflection-color: rgba(117, 130, 136, .08);
+      --reflection-opacity: .45;
+      --reflection-x: 24%;
+      --reflection-y: 5%;
     }
 
     .info-panel.material-starlight {
-      --panel-bg: rgba(176, 151, 108, 0.25);
-      --panel-bg-hover: rgba(176, 151, 108, 0.31);
-      --panel-border: rgba(255, 239, 205, 0.40);
-      --panel-shadow: 0 18px 42px rgba(61, 44, 20, .17), inset 0 1px 0 rgba(255,255,255,.26);
-      --panel-blur: 18px;
-      --panel-highlight: rgba(255, 249, 231, .17);
+      --panel-border: rgba(255, 239, 207, 0.32);
+      --panel-shadow: 0 17px 40px rgba(66, 45, 17, .13), inset 0 1px 0 rgba(255,255,255,.24);
+      --reflection-color: rgba(255, 235, 194, .22);
+      --reflection-opacity: .76;
+      --reflection-x: 20%;
+      --reflection-y: 8%;
     }
 
     .info-panel.material-ocean {
-      --panel-bg: rgba(35, 84, 103, 0.34);
-      --panel-bg-hover: rgba(35, 84, 103, 0.41);
-      --panel-border: rgba(178, 220, 235, 0.34);
-      --panel-shadow: 0 18px 42px rgba(3, 27, 38, .22), inset 0 1px 0 rgba(222, 246, 252, .18);
-      --panel-blur: 18px;
-      --panel-highlight: rgba(199, 235, 247, .13);
+      --panel-border: rgba(185, 224, 236, 0.27);
+      --panel-shadow: 0 17px 40px rgba(4, 31, 42, .14), inset 0 1px 0 rgba(231,249,255,.18);
+      --reflection-color: rgba(124, 202, 226, .18);
+      --reflection-opacity: .68;
+      --reflection-x: 16%;
+      --reflection-y: 12%;
+      --reflection-rotate: -13deg;
     }
 
     .info-panel.material-forest {
-      --panel-bg: rgba(34, 82, 62, 0.34);
-      --panel-bg-hover: rgba(34, 82, 62, 0.41);
-      --panel-border: rgba(181, 219, 198, 0.32);
-      --panel-shadow: 0 18px 42px rgba(4, 31, 22, .22), inset 0 1px 0 rgba(226, 245, 234, .16);
-      --panel-blur: 18px;
-      --panel-highlight: rgba(204, 235, 217, .12);
+      --panel-border: rgba(190, 220, 202, 0.25);
+      --panel-shadow: 0 17px 40px rgba(7, 36, 25, .14), inset 0 1px 0 rgba(234,250,240,.16);
+      --reflection-color: rgba(123, 190, 151, .17);
+      --reflection-opacity: .66;
+      --reflection-x: 82%;
+      --reflection-y: 90%;
+      --reflection-rotate: 8deg;
     }
 
     .info-panel.material-gold {
-      --panel-bg: rgba(148, 106, 55, 0.30);
-      --panel-bg-hover: rgba(148, 106, 55, 0.37);
-      --panel-border: rgba(247, 220, 174, 0.36);
-      --panel-shadow: 0 18px 42px rgba(56, 33, 11, .20), inset 0 1px 0 rgba(255, 241, 211, .20);
-      --panel-blur: 18px;
-      --panel-highlight: rgba(255, 228, 181, .14);
+      --panel-border: rgba(245, 219, 177, 0.28);
+      --panel-shadow: 0 17px 40px rgba(57, 35, 13, .14), inset 0 1px 0 rgba(255,244,220,.18);
+      --reflection-color: rgba(242, 183, 102, .19);
+      --reflection-opacity: .70;
+      --reflection-x: 84%;
+      --reflection-y: 86%;
+      --reflection-rotate: 10deg;
     }
 
     .info-panel.dragging {
