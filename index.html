@@ -7,22 +7,22 @@
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <meta content="Through Chun Chun's Lens — photography, stories, camera settings, and a private EXIF presentation studio." name="description"/>
 <title>Through Chun Chun's Lens — Photography &amp; Photo Studio</title>
-  <meta name="theme-color" content="#f5f2ec">
   <meta name="description" content="Through Chun Chun's Lens — a quiet photography portfolio and browser-based photo presentation studio by Chun Chun.">
   <meta property="og:title" content="Through Chun Chun's Lens">
   <meta property="og:description" content="Photography, light, and the feeling behind every frame.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="images/hero-fireworks.jpg">
   <link rel="preload" as="image" href="images/hero-fireworks.jpg">
-<link href="through-chun-chuns-lens-favicon-v6-3.svg?v=6.3" rel="icon" type="image/svg+xml"/>
-<link href="through-chun-chuns-lens-icon-192-v6-3.png?v=6.3" rel="icon" sizes="192x192" type="image/png"/>
-<link href="through-chun-chuns-lens-apple-touch-icon-v6-3.png?v=6.3" rel="apple-touch-icon" sizes="180x180"/>
-<link href="through-chun-chuns-lens-manifest-v6-3.webmanifest?v=6.3" rel="manifest"/>
+<link href="favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
+<link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="manifest.webmanifest" rel="manifest"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Through Chun Chun's Lens" name="apple-mobile-web-app-title"/>
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="#23423d" name="theme-color"/>
+<meta content="#23423d" name="msapplication-TileColor"/>
 <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -3341,9 +3341,64 @@
       .work-card { min-height: 430px; }
       .hero-frame { background-position: 53% center; }
     }
+
+
+    /* V10 Final Polish — complete EXIF card + standalone app launch */
+    .info-panel {
+      background: linear-gradient(145deg, rgba(18,25,29,.58), rgba(14,19,24,.36)) !important;
+      border: 1px solid rgba(255,255,255,.42) !important;
+      box-shadow: 0 18px 48px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18) !important;
+      -webkit-backdrop-filter: blur(18px) saturate(125%) !important;
+      backdrop-filter: blur(18px) saturate(125%) !important;
+    }
+    .info-panel .metadata-stack { gap: 12px !important; }
+    .info-panel .camera-line {
+      white-space: pre-line;
+      font-size: 21px !important;
+      line-height: 1.35 !important;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+    .info-panel .secondary-line,
+    .info-panel .settings-line {
+      font-size: 17px !important;
+      line-height: 1.5 !important;
+      letter-spacing: .01em;
+    }
+    .info-panel .signature {
+      margin-top: 17px !important;
+      padding-top: 15px !important;
+      border-top: 1px solid rgba(255,255,255,.28) !important;
+    }
+    .info-panel .signature-name {
+      font-size: 14px !important;
+      font-weight: 500;
+      letter-spacing: .015em;
+    }
+    .app-launch-screen {
+      position: fixed; inset: 0; z-index: 99999;
+      display: none; place-items: center;
+      background: linear-gradient(150deg,#315f63,#173b41);
+      color: #fffaf0; opacity: 1; transition: opacity .45s ease;
+    }
+    .app-launch-screen.visible { display: grid; }
+    .app-launch-screen.fade-out { opacity: 0; pointer-events: none; }
+    .app-launch-inner { text-align: center; animation: launchIn .6s ease both; }
+    .app-launch-inner img { width: 118px; height: 118px; border-radius: 27px; box-shadow: 0 20px 46px rgba(0,0,0,.24); }
+    .app-launch-inner p { margin: 18px 0 0; font-family: "Instrument Serif", Georgia, serif; font-size: 26px; }
+    @keyframes launchIn { from { opacity:0; transform:translateY(8px) scale(.98); } to { opacity:1; transform:none; } }
+    @media (prefers-reduced-motion: reduce) { .app-launch-inner { animation:none; } .app-launch-screen { transition:none; } }
+
 </style>
 </head>
 <body>
+<div aria-hidden="true" class="app-launch-screen" id="appLaunchScreen">
+  <div class="app-launch-inner">
+    <img alt="" src="icon-512.png"/>
+    <p>Through Chun Chun's Lens</p>
+  </div>
+</div>
+
 <div aria-hidden="true" class="background-decoration">
 <div class="orb orb-one"></div>
 <div class="orb orb-two"></div>
@@ -3812,6 +3867,7 @@
     const signatureName = document.getElementById("signatureName");
 
     let currentFile = null;
+    let isDemoPhoto = false;
     let currentObjectUrl = null;
     let infoVisible = true;
     let photoScale = 1;
@@ -3854,7 +3910,7 @@
         if (!response.ok) throw new Error("Demo photo unavailable");
         const blob = await response.blob();
         const demoFile = new File([blob], "chun-chun-nightscape.jpg", { type: blob.type || "image/jpeg" });
-        await openPhoto(demoFile);
+        await openPhoto(demoFile, true);
       } catch (error) {
         // Keep the normal upload screen available when opened outside a web server.
       }
@@ -3872,10 +3928,11 @@
         return;
       }
 
-      openPhoto(selectedFile);
+      openPhoto(selectedFile, false);
     }
 
-    async function openPhoto(file) {
+    async function openPhoto(file, demo = false) {
+      isDemoPhoto = demo;
       errorMessage.textContent = "";
 
       if (!isSupportedImage(file)) {
@@ -3921,7 +3978,11 @@
       showInfoPanel();
       resetExifDisplay();
 
-      await readExifData(file);
+      if (isDemoPhoto) {
+        applyDemoExif();
+      } else {
+        await readExifData(file);
+      }
     }
 
     async function readExifData(file) {
@@ -4006,7 +4067,7 @@
           focalLength
         ].filter(Boolean);
 
-        updateMetadataLine(cameraLine, cameraParts.join(" • "));
+        updateMetadataLine(cameraLine, cameraParts.join("\n"));
         updateMetadataLine(settingsLine, settingsParts.join(" • "));
       } catch (error) {
         updateMetadataLine(cameraLine, "");
@@ -4014,6 +4075,13 @@
       } finally {
         exifLoading.style.display = "none";
       }
+    }
+
+    function applyDemoExif() {
+      updateMetadataLine(cameraLine, "Canon EOS R10\nRF-S18-150mm F3.5-6.3 IS STM");
+      basicLine.textContent = "JPEG • 12 Jun 2026 • 21:26";
+      updateMetadataLine(settingsLine, "f/8 • 15s • ISO100 • 129mm");
+      exifLoading.style.display = "none";
     }
 
     function resetExifDisplay() {
@@ -4915,6 +4983,19 @@
         keepInfoPanelInsideStage();
       }, 180);
     });
+
+    (() => {
+      const launch = document.getElementById("appLaunchScreen");
+      const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+      if (!launch || !standalone) return;
+      launch.classList.add("visible");
+      window.addEventListener("load", () => {
+        window.setTimeout(() => {
+          launch.classList.add("fade-out");
+          window.setTimeout(() => launch.remove(), 500);
+        }, 700);
+      }, { once: true });
+    })();
 </script>
 </body>
 </html>

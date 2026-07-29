@@ -1,0 +1,25 @@
+{
+  "name": "Through Chun Chun's Lens",
+  "short_name": "Chun Chun Lens",
+  "description": "A private browser-based photo presentation studio by Chun Chun.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#23423d",
+  "theme_color": "#23423d",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
