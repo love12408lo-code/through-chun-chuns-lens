@@ -2727,7 +2727,7 @@
 
 
     /* =========================
-       V6 PRE-PHOTO FINAL — Brand, RWD, Studio Card & Polish
+       V6.1 PRE-PHOTO ICON FIX — Brand, RWD, Studio Card & Polish
        ========================= */
 
     :root {
@@ -3001,6 +3001,105 @@
         left: 12px;
         bottom: 12px;
       }
+    }
+
+  
+
+    /* =========================
+       V6.1 — About Photo Placeholder & True App Icon
+       ========================= */
+
+    /* About 左側將保留給淳淳的人像照片，不再放品牌圖案 */
+    .brand-story-placeholder {
+      background:
+        radial-gradient(circle at 72% 20%, rgba(255, 239, 198, .42), transparent 24%),
+        linear-gradient(155deg, rgba(188,220,221,.96), rgba(112,158,164,.96) 58%, rgba(39,77,85,.98));
+    }
+
+    .brand-story-placeholder::before {
+      background:
+        radial-gradient(ellipse at 24% 100%, rgba(23,62,69,.88) 0 38%, transparent 39%),
+        radial-gradient(ellipse at 72% 100%, rgba(33,83,91,.86) 0 42%, transparent 43%);
+    }
+
+    .about-photo-placeholder {
+      position: relative;
+      width: min(290px, 72%);
+      aspect-ratio: 4 / 5;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.52);
+      border-radius: 28px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.28), rgba(255,255,255,.10));
+      box-shadow:
+        0 24px 54px rgba(17,49,54,.18),
+        inset 0 1px 0 rgba(255,255,255,.58);
+      -webkit-backdrop-filter: blur(18px) saturate(135%);
+      backdrop-filter: blur(18px) saturate(135%);
+    }
+
+    .about-photo-placeholder::before {
+      content: "";
+      width: 88px;
+      height: 88px;
+      margin-top: -34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.46);
+      box-shadow: 0 92px 0 42px rgba(255,255,255,.30);
+    }
+
+    .about-photo-placeholder span {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      color: rgba(255,255,255,.86);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* Step 03 與實際加入主畫面的 Icon 使用同一套正式品牌圖案 */
+    .app-icon {
+      width: 88px;
+      height: 88px;
+      border-radius: 25px;
+      background:
+        radial-gradient(circle at 31% 24%, rgba(255,255,255,.20), transparent 26%),
+        linear-gradient(145deg, #426e70, #234a50 72%, #193c42);
+      box-shadow:
+        0 18px 34px rgba(31,69,73,.26),
+        inset 0 1px 0 rgba(255,255,255,.24);
+    }
+
+    .app-icon::before,
+    .app-icon::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    .app-icon .brand-symbol {
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0 7px 13px rgba(0,0,0,.16));
+    }
+
+    .app-icon .brand-symbol path:first-of-type,
+    .app-icon .brand-symbol path:nth-of-type(2) {
+      stroke: url(#appIconStroke) !important;
+    }
+
+    .app-icon-name {
+      max-width: 150px;
+      margin-inline: auto;
+      color: #314e52;
+      font-size: 9px;
+      line-height: 1.25;
+      letter-spacing: -.01em;
     }
 
   </style>
@@ -3380,21 +3479,10 @@
 
     <section class="content-section" id="story" aria-labelledby="storyTitle">
       <div class="story-panel">
-        <div class="story-mark brand-story-placeholder" aria-label="About 照片將於下一階段置入">
-          <div class="story-brand-preview"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#23423d"/>
-      <stop offset="0.55" stop-color="#6d837a"/>
-      <stop offset="1" stop-color="#d8b98a"/>
-    </linearGradient>
-  </defs>
-  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
-  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
-  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
-  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
-</svg><span class="story-brand-name">Through Chun Chun's Lens</span></div>
+        <div class="story-mark brand-story-placeholder" aria-label="About 人像照片將於下一階段置入">
+          <div class="about-photo-placeholder" aria-hidden="true">
+            <span>Your About Photo</span>
+          </div>
         </div>
 
         <div class="story-copy">
@@ -3511,14 +3599,14 @@
             <div class="app-icon-wrap">
               <div class="app-icon"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#23423d"/>
-      <stop offset="0.55" stop-color="#6d837a"/>
+    <linearGradient id="appIconStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f5f2e9"/>
+      <stop offset="0.56" stop-color="#d7e1d9"/>
       <stop offset="1" stop-color="#d8b98a"/>
     </linearGradient>
   </defs>
-  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
-  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#appIconStroke)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#appIconStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
   <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
   <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
