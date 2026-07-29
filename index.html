@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V6.9 Light Reflection Materials Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V7.0 Original Glass Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -1440,20 +1440,6 @@
       min-height: 32px; padding: 0 11px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px;
       color: rgba(255,255,255,.9); background: rgba(255,255,255,.08); cursor: pointer; font-size: 11px; font-weight: 650;
     }
-    .material-swatches { display: flex; flex-wrap: wrap; gap: 9px; }
-    .material-swatch {
-      width: 28px; height: 28px; padding: 0; border: 2px solid rgba(255,255,255,.26); border-radius: 50%; cursor: pointer;
-      box-shadow: inset 0 1px 1px rgba(255,255,255,.65), 0 4px 12px rgba(0,0,0,.2); transition: transform 150ms ease, border-color 150ms ease;
-    }
-    .material-swatch:hover { transform: translateY(-2px) scale(1.05); }
-    .material-swatch.active { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.16), inset 0 1px 1px rgba(255,255,255,.75); }
-    .swatch-default { background: linear-gradient(145deg, rgba(255,255,255,.65), rgba(90,105,110,.36)); }
-    .swatch-titanium { background: linear-gradient(145deg, #eef1f1, #737e82); }
-    .swatch-black { background: linear-gradient(145deg, #60666a, #080a0b); }
-    .swatch-starlight { background: linear-gradient(145deg, #fff9e9, #c6aa7a); }
-    .swatch-ocean { background: linear-gradient(145deg, #8daebd, #183847); }
-    .swatch-forest { background: linear-gradient(145deg, #7e9b8b, #173a2d); }
-    .swatch-gold { background: linear-gradient(145deg, #f0d7a8, #8a6237); }
     .signature-input {
       width: 100%; min-height: 38px; padding: 0 12px; border: 1px solid rgba(255,255,255,.17); border-radius: 12px;
       color: #fff; background: rgba(255,255,255,.08); outline: none;
@@ -1607,97 +1593,8 @@
       background: var(--panel-bg-hover);
     }
 
-    /* V6.9 — Light-reflection materials.
-       The glass body stays almost identical to Original; only reflected light,
-       edge tone and shadow character change. */
-    .info-panel::after {
-      content: "";
-      position: absolute;
-      inset: -28% -18%;
-      z-index: 0;
-      pointer-events: none;
-      border-radius: 42%;
-      background:
-        radial-gradient(circle at var(--reflection-x, 22%) var(--reflection-y, 12%),
-          var(--reflection-color, rgba(255,255,255,0)) 0%,
-          transparent 46%);
-      opacity: var(--reflection-opacity, 0);
-      transform: rotate(var(--reflection-rotate, -8deg));
-      mix-blend-mode: screen;
-    }
-
-    .info-panel.material-titanium,
-    .info-panel.material-black,
-    .info-panel.material-starlight,
-    .info-panel.material-ocean,
-    .info-panel.material-forest,
-    .info-panel.material-gold {
-      --panel-bg: rgba(13, 18, 20, 0.09);
-      --panel-bg-hover: rgba(13, 18, 20, 0.13);
-      --panel-blur: 16px;
-      --panel-highlight: rgba(255,255,255,.12);
-      --panel-text-shadow: 0 1px 3px rgba(0,0,0,.58);
-    }
-
-    .info-panel.material-titanium {
-      --panel-border: rgba(226, 233, 235, 0.34);
-      --panel-shadow: 0 16px 38px rgba(5, 14, 17, .14), inset 0 1px 0 rgba(255,255,255,.25);
-      --reflection-color: rgba(219, 231, 234, .20);
-      --reflection-opacity: .72;
-      --reflection-x: 18%;
-      --reflection-y: 7%;
-    }
-
-    .info-panel.material-black {
-      --panel-bg: rgba(7, 10, 12, 0.18);
-      --panel-bg-hover: rgba(7, 10, 12, 0.23);
-      --panel-border: rgba(219, 224, 226, 0.18);
-      --panel-shadow: 0 19px 44px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.08);
-      --panel-highlight: rgba(255,255,255,.055);
-      --reflection-color: rgba(117, 130, 136, .08);
-      --reflection-opacity: .45;
-      --reflection-x: 24%;
-      --reflection-y: 5%;
-    }
-
-    .info-panel.material-starlight {
-      --panel-border: rgba(255, 239, 207, 0.32);
-      --panel-shadow: 0 17px 40px rgba(66, 45, 17, .13), inset 0 1px 0 rgba(255,255,255,.24);
-      --reflection-color: rgba(255, 235, 194, .22);
-      --reflection-opacity: .76;
-      --reflection-x: 20%;
-      --reflection-y: 8%;
-    }
-
-    .info-panel.material-ocean {
-      --panel-border: rgba(185, 224, 236, 0.27);
-      --panel-shadow: 0 17px 40px rgba(4, 31, 42, .14), inset 0 1px 0 rgba(231,249,255,.18);
-      --reflection-color: rgba(124, 202, 226, .18);
-      --reflection-opacity: .68;
-      --reflection-x: 16%;
-      --reflection-y: 12%;
-      --reflection-rotate: -13deg;
-    }
-
-    .info-panel.material-forest {
-      --panel-border: rgba(190, 220, 202, 0.25);
-      --panel-shadow: 0 17px 40px rgba(7, 36, 25, .14), inset 0 1px 0 rgba(234,250,240,.16);
-      --reflection-color: rgba(123, 190, 151, .17);
-      --reflection-opacity: .66;
-      --reflection-x: 82%;
-      --reflection-y: 90%;
-      --reflection-rotate: 8deg;
-    }
-
-    .info-panel.material-gold {
-      --panel-border: rgba(245, 219, 177, 0.28);
-      --panel-shadow: 0 17px 40px rgba(57, 35, 13, .14), inset 0 1px 0 rgba(255,244,220,.18);
-      --reflection-color: rgba(242, 183, 102, .19);
-      --reflection-opacity: .70;
-      --reflection-x: 84%;
-      --reflection-y: 86%;
-      --reflection-rotate: 10deg;
-    }
+    /* V7.0 — Original Glass only.
+       Colored variants were removed so the photograph remains the visual focus. */
 
     .info-panel.dragging {
       cursor: grabbing;
@@ -2382,102 +2279,7 @@
        V5.0 — Material Experience
        ========================= */
 
-    .material-swatches {
-      gap: 10px;
-      padding: 3px 1px 10px;
-    }
-
-    .material-swatch {
-      position: relative;
-      width: 30px;
-      height: 30px;
-      overflow: visible;
-      border: 1px solid rgba(255,255,255,.42);
-      box-shadow:
-        inset 0 2px 5px rgba(255,255,255,.72),
-        inset 0 -4px 8px rgba(0,0,0,.20),
-        0 5px 14px rgba(0,0,0,.24);
-      isolation: isolate;
-    }
-
-    .material-swatch::before {
-      content: "";
-      position: absolute;
-      inset: 3px 6px auto 6px;
-      height: 7px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,0));
-      opacity: .8;
-      pointer-events: none;
-    }
-
-    .material-swatch::after {
-      content: attr(data-label);
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% + 11px);
-      z-index: 20;
-      width: max-content;
-      max-width: 150px;
-      padding: 7px 10px;
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 9px;
-      color: rgba(255,255,255,.94);
-      background: rgba(10,14,16,.90);
-      box-shadow: 0 10px 24px rgba(0,0,0,.28);
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
-      font-size: 10px;
-      font-weight: 680;
-      letter-spacing: .025em;
-      white-space: nowrap;
-      opacity: 0;
-      transform: translate(-50%, 5px) scale(.96);
-      pointer-events: none;
-      transition: opacity .16s ease, transform .16s ease;
-    }
-
-    .material-swatch:hover,
-    .material-swatch:focus-visible {
-      transform: translateY(-3px) scale(1.08);
-      border-color: rgba(255,255,255,.9);
-      outline: none;
-    }
-
-    .material-swatch:hover::after,
-    .material-swatch:focus-visible::after {
-      opacity: 1;
-      transform: translate(-50%, 0) scale(1);
-    }
-
-    .material-swatch.active {
-      border-color: #fff;
-      transform: scale(1.06);
-      box-shadow:
-        0 0 0 3px rgba(255,255,255,.20),
-        0 0 0 5px rgba(109,126,208,.16),
-        inset 0 2px 5px rgba(255,255,255,.78),
-        inset 0 -4px 8px rgba(0,0,0,.22),
-        0 8px 18px rgba(0,0,0,.28);
-    }
-
-    .material-swatch.active::before {
-      opacity: 1;
-    }
-
     @media (max-width: 720px) {
-      .material-swatches {
-        gap: 9px;
-      }
-
-      .material-swatch {
-        width: 29px;
-        height: 29px;
-      }
-
-      .material-swatch::after {
-        display: none;
-      }
     }
 
     /* =========================
@@ -3835,18 +3637,6 @@
               <div class="ratio-hint" id="ratioHint">上傳照片後會自動顯示原始比例。</div>
             </div>
             <div class="control-row">
-              <div class="control-label"><span>Material</span><span id="materialName">Original Glass</span></div>
-              <div class="material-swatches">
-                <button class="material-swatch swatch-default active" type="button" data-material="default" data-label="Original Glass" title="Original Glass" aria-label="Original Glass"></button>
-                <button class="material-swatch swatch-titanium" type="button" data-material="titanium" data-label="Titanium Silver" title="Titanium Silver" aria-label="Titanium Silver"></button>
-                <button class="material-swatch swatch-black" type="button" data-material="black" data-label="Space Black" title="Space Black" aria-label="Space Black"></button>
-                <button class="material-swatch swatch-starlight" type="button" data-material="starlight" data-label="Starlight" title="Starlight" aria-label="Starlight"></button>
-                <button class="material-swatch swatch-ocean" type="button" data-material="ocean" data-label="Deep Ocean" title="Deep Ocean" aria-label="Deep Ocean"></button>
-                <button class="material-swatch swatch-forest" type="button" data-material="forest" data-label="Forest Green" title="Forest Green" aria-label="Forest Green"></button>
-                <button class="material-swatch swatch-gold" type="button" data-material="gold" data-label="Champagne Gold" title="Champagne Gold" aria-label="Champagne Gold"></button>
-              </div>
-            </div>
-            <div class="control-row">
               <label class="control-label" for="signatureInput"><span>Signature</span><span>可自行更改</span></label>
               <input class="signature-input" id="signatureInput" type="text" value="Chun Chun" maxlength="40" placeholder="輸入名字">
             </div>
@@ -4129,8 +3919,6 @@
     const outputRatioLabel = document.getElementById("outputRatioLabel");
     const ratioHint = document.getElementById("ratioHint");
     const exportGuide = document.getElementById("exportGuide");
-    const materialName = document.getElementById("materialName");
-    const materialSwatches = Array.from(document.querySelectorAll(".material-swatch"));
     const signatureInput = document.getElementById("signatureInput");
     const signatureName = document.getElementById("signatureName");
 
@@ -4148,7 +3936,6 @@
     let photoPointerStartY = 0;
     let photoOriginX = 0;
     let photoOriginY = 0;
-    let currentMaterial = "default";
 
     chooseButton.addEventListener("click", openFilePicker);
     changeButton.addEventListener("click", openFilePicker);
@@ -4166,7 +3953,6 @@
       applyOutputRatio();
     });
     signatureInput.addEventListener("input", updateSignature);
-    materialSwatches.forEach((button) => button.addEventListener("click", () => setMaterial(button.dataset.material, button.dataset.label)));
     applyInfoPanelScale();
     window.addEventListener("resize", updateExportGuide);
 
@@ -4623,14 +4409,6 @@
       if (!photoDragging) return;
       photoDragging = false; photoPreview.classList.remove("dragging");
       try { photoPreview.releasePointerCapture(event.pointerId); } catch (error) {}
-    }
-
-    function setMaterial(material, label) {
-      currentMaterial = material || "default";
-      infoPanel.classList.remove("material-titanium", "material-black", "material-starlight", "material-ocean", "material-forest", "material-gold");
-      if (currentMaterial !== "default") infoPanel.classList.add(`material-${currentMaterial}`);
-      materialName.textContent = label || "Original Glass";
-      materialSwatches.forEach((button) => button.classList.toggle("active", button.dataset.material === currentMaterial));
     }
 
     function updateSignature() {
@@ -5190,7 +4968,6 @@
     }
 
     updateSignature();
-    setMaterial("default", "Original Glass");
     applyPhotoTransform();
     applyInfoPanelScale();
 
