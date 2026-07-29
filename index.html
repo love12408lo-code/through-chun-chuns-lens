@@ -1,42 +1,34 @@
 <!DOCTYPE html>
+
 <!-- Through Chun Chun's Lens V7.0 Original Glass Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
-
-  <meta
-    name="description"
-    content="Through Chun Chun's Lens — photography, stories, camera settings, and a private EXIF presentation studio."
-  />
-
-  <title>Through Chun Chun's Lens</title>
-
-  <link rel="icon" type="image/svg+xml" href="through-chun-chuns-lens-favicon-v6-3.svg?v=6.3">
-  <link rel="icon" type="image/png" sizes="192x192" href="through-chun-chuns-lens-icon-192-v6-3.png?v=6.3">
-  <link rel="apple-touch-icon" sizes="180x180" href="through-chun-chuns-lens-apple-touch-icon-v6-3.png?v=6.3">
-  <link rel="manifest" href="through-chun-chuns-lens-manifest-v6-3.webmanifest?v=6.3">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Through Chun Chun's Lens">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#23423d">
-
-  <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Instrument+Serif:ital@0;1&family=Italianno&family=La+Belle+Aurore&display=swap"
-    rel="stylesheet"
-  >
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta content="Through Chun Chun's Lens — photography, stories, camera settings, and a private EXIF presentation studio." name="description"/>
+<title>Through Chun Chun's Lens — Photography &amp; Photo Studio</title>
+  <meta name="theme-color" content="#f5f2ec">
+  <meta name="description" content="Through Chun Chun's Lens — a quiet photography portfolio and browser-based photo presentation studio by Chun Chun.">
+  <meta property="og:title" content="Through Chun Chun's Lens">
+  <meta property="og:description" content="Photography, light, and the feeling behind every frame.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="images/hero-fireworks.jpg">
+  <link rel="preload" as="image" href="images/hero-fireworks.jpg">
+<link href="through-chun-chuns-lens-favicon-v6-3.svg?v=6.3" rel="icon" type="image/svg+xml"/>
+<link href="through-chun-chuns-lens-icon-192-v6-3.png?v=6.3" rel="icon" sizes="192x192" type="image/png"/>
+<link href="through-chun-chuns-lens-apple-touch-icon-v6-3.png?v=6.3" rel="apple-touch-icon" sizes="180x180"/>
+<link href="through-chun-chuns-lens-manifest-v6-3.webmanifest?v=6.3" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Through Chun Chun's Lens" name="apple-mobile-web-app-title"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="#23423d" name="theme-color"/>
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&amp;family=Instrument+Serif:ital@0;1&amp;family=Italianno&amp;family=La+Belle+Aurore&amp;display=swap" rel="stylesheet"/>
+<style>
     :root {
       --background: #edf5f5;
       --background-deep: #dceced;
@@ -3305,582 +3297,454 @@
       }
     }
 
-  </style>
+  
+
+    /* V7 — Final photography integration */
+    .hero-frame {
+      background-image: linear-gradient(180deg, rgba(4,8,13,.04), rgba(4,8,13,.18)), url("images/hero-fireworks.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+    .hero-frame::before,
+    .hero-frame::after { display: none; }
+
+    .work-art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .work-card:nth-child(1) .work-art { object-position: 57% center; }
+    .work-card:nth-child(2) .work-art { object-position: center; }
+    .work-card:nth-child(3) .work-art { object-position: center; }
+    .work-card:nth-child(4) .work-art { object-position: center; }
+    .work-card:nth-child(5) .work-art { object-position: center; }
+    .work-card:nth-child(6) .work-art { object-position: center; }
+
+    .brand-story-placeholder {
+      padding: 0;
+      background: rgba(255,255,255,.52);
+    }
+    .brand-story-placeholder::before { display: none; }
+    .about-photo {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: 50% 42%;
+    }
+
+    @media (max-width: 760px) {
+      .works-grid { grid-template-columns: 1fr; }
+      .work-card-large,
+      .work-card-small { grid-column: 1; }
+      .work-card { min-height: 430px; }
+      .hero-frame { background-position: 53% center; }
+    }
+</style>
 </head>
-
 <body>
-  <div class="background-decoration" aria-hidden="true">
-    <div class="orb orb-one"></div>
-    <div class="orb orb-two"></div>
-  </div>
-
-  <main class="page">
-    <header class="hero" id="top">
-      <nav class="top-nav" aria-label="主要導覽">
-        <a href="#top" class="nav-logo" aria-label="Through Chun Chun's Lens 首頁"><span class="brand-lockup"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#23423d"/>
-      <stop offset="0.55" stop-color="#6d837a"/>
-      <stop offset="1" stop-color="#d8b98a"/>
-    </linearGradient>
-  </defs>
-  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
-  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
-  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
-  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+<div aria-hidden="true" class="background-decoration">
+<div class="orb orb-one"></div>
+<div class="orb orb-two"></div>
+</div>
+<main class="page">
+<header class="hero" id="top">
+<nav aria-label="主要導覽" class="top-nav">
+<a aria-label="Through Chun Chun's Lens 首頁" class="nav-logo" href="#top"><span class="brand-lockup"><svg aria-hidden="true" class="brand-symbol" focusable="false" viewbox="0 0 120 120">
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="brandStroke" x1="18" x2="105" y1="12" y2="105">
+<stop offset="0" stop-color="#23423d"></stop>
+<stop offset="0.55" stop-color="#6d837a"></stop>
+<stop offset="1" stop-color="#d8b98a"></stop>
+</lineargradient>
+</defs>
+<path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-linecap="round" stroke-width="3.4"></path>
+<path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.1"></path>
+<path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"></path>
+<circle cx="83.5" cy="38" fill="#d8b98a" r="1.7"></circle>
+<circle cx="88.5" cy="44" fill="#d8b98a" opacity=".75" r="1.1"></circle>
 </svg><span class="brand-wordmark">Through Chun Chun's Lens</span></span></a>
-
-        <div class="nav-menu">
-          <a href="#works">Featured Works</a>
-          <a href="#how">How It Works</a>
-          <a href="#studio">Photo Studio</a>
-          <a href="#story">The Story</a>
-        </div>
-      </nav>
-
-      <section class="hero-container">
-        <div class="hero-left">
-          <span class="hero-badge">Photography Presentation Tool</span>
-
-          <h1 class="hero-title">
-            Transform Every<br>
-            Photograph Into<br>
-            <span class="hero-accent">A Beautiful Story.</span>
-          </h1>
-
-          <p class="hero-description">
+<div class="nav-menu">
+<a href="#works">Featured Works</a>
+<a href="#how">How It Works</a>
+<a href="#studio">Photo Studio</a>
+<a href="#story">The Story</a>
+</div>
+</nav>
+<section class="hero-container">
+<div class="hero-left">
+<span class="hero-badge">Photography Presentation Tool</span>
+<h1 class="hero-title">
+            Transform Every<br/>
+            Photograph Into<br/>
+<span class="hero-accent">A Beautiful Story.</span>
+</h1>
+<p class="hero-description">
             More than an image viewer. Through Chun Chun's Lens turns one
             photograph into an elegant presentation by bringing together the
             image, its camera settings, and the feeling behind every frame.
           </p>
-
-          <div class="hero-actions">
-            <a href="#studio" class="hero-button">Start Creating →</a>
-            <span class="hero-note">Private, local, and made for photographers.</span>
-          </div>
-        </div>
-
-        <div class="hero-right" aria-label="網站視覺示意">
-          <div class="hero-visual">
-            <div class="hero-frame"></div>
-
-            <div class="hero-card-caption">
-              <p class="hero-card-kicker">Featured Moment</p>
-              <p class="hero-card-title">Every frame carries a feeling.</p>
-              <p class="hero-card-author">Captured by Chun Chun</p>
-            </div>
-
-            <span class="hero-floating-chip hero-chip-one">Elegant presentation</span>
-            <span class="hero-floating-chip hero-chip-two">Real EXIF details</span>
-          </div>
-        </div>
-      </section>
-    </header>
-
-
-    <section class="content-section" id="works" aria-labelledby="worksTitle">
-      <div class="section-heading">
-        <p class="section-kicker">Featured Works</p>
-        <h2 class="section-title" id="worksTitle">
+<div class="hero-actions">
+<a class="hero-button" href="#studio">Start Creating →</a>
+<span class="hero-note">Private, local, and made for photographers.</span>
+</div>
+</div>
+<div aria-label="網站視覺示意" class="hero-right">
+<div class="hero-visual">
+<div aria-label="Golden fireworks filling the night sky" class="hero-frame" role="img"></div>
+<div class="hero-card-caption">
+<p class="hero-card-kicker">Featured Moment</p>
+<p class="hero-card-title">Every frame carries a feeling.</p>
+<p class="hero-card-author">Captured by Chun Chun</p>
+</div>
+<span class="hero-floating-chip hero-chip-one">Elegant presentation</span>
+<span class="hero-floating-chip hero-chip-two">Real EXIF details</span>
+</div>
+</div>
+</section>
+</header>
+<section aria-labelledby="worksTitle" class="content-section" id="works">
+<div class="section-heading">
+<p class="section-kicker">Featured Works</p>
+<h2 class="section-title" id="worksTitle">
           Moments that made me stop and look again.
         </h2>
-        <p class="section-description">
+<p class="section-description">
           A small collection inspired by the light, landscapes, flowers,
           night skies, and city scenes I love to photograph.
         </p>
-      </div>
-
-      <div class="works-grid">
-        <article class="work-card work-card-large">
-          <div class="work-art work-art-sunset"></div>
-          <div class="work-caption">
-            <p class="work-number">01 — Golden Hour</p>
-            <h3 class="work-title">Light before the day disappears.</h3>
-            <p class="work-meta">Sunset · Landscape · Quiet moments</p>
-          </div>
-        </article>
-
-        <article class="work-card work-card-small">
-          <div class="work-art work-art-night"></div>
-          <div class="work-caption">
-            <p class="work-number">02 — Night Sky</p>
-            <h3 class="work-title">A sky filled with tiny lights.</h3>
-            <p class="work-meta">Stars · Night photography</p>
-          </div>
-        </article>
-
-        <article class="work-card work-card-small">
-          <div class="work-art work-art-flower"></div>
-          <div class="work-caption">
-            <p class="work-number">03 — Soft Details</p>
-            <h3 class="work-title">Beauty found in the smallest frame.</h3>
-            <p class="work-meta">Flowers · Nature · Close-up</p>
-          </div>
-        </article>
-
-        <article class="work-card work-card-large">
-          <div class="work-art work-art-city"></div>
-          <div class="work-caption">
-            <p class="work-number">04 — After Dark</p>
-            <h3 class="work-title">When the city begins to glow.</h3>
-            <p class="work-meta">City lights · Long exposure · Night</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-
-    <section class="how-section" id="how" aria-labelledby="howTitle">
-      <div class="how-heading">
-        <p class="section-kicker">Create in 3 Steps</p>
-        <h2 class="section-title" id="howTitle">Beautiful presentations in under a minute.</h2>
-        <p class="section-description">
+</div>
+<div class="works-grid"><article class="work-card work-card-large"><img alt="A small travel companion by the lake." class="work-art" decoding="async" loading="lazy" src="images/work-grogu.jpg"/><div class="work-caption"><p class="work-number">01 — 朝霧碼頭</p><h3 class="work-title">A small travel companion by the lake.</h3><p class="work-meta">Grogu · Portrait · Sun Moon Lake</p></div></article><article class="work-card work-card-small"><img alt="Morning light resting on the pier." class="work-art" decoding="async" loading="lazy" src="images/work-chaowu-pier.jpg"/><div class="work-caption"><p class="work-number">02 — 朝霧碼頭</p><h3 class="work-title">Morning light resting on the pier.</h3><p class="work-meta">Landscape · Pier · Morning light</p></div></article><article class="work-card work-card-small"><img alt="Old architecture reflected after dark." class="work-art" decoding="async" loading="lazy" src="images/work-comics-museum.jpg"/><div class="work-caption"><p class="work-number">03 — 國家漫畫博物館</p><h3 class="work-title">Old architecture reflected after dark.</h3><p class="work-meta">Architecture · Reflection · Long exposure</p></div></article><article class="work-card work-card-large"><img alt="The city glowing beneath a blue night." class="work-art" decoding="async" loading="lazy" src="images/work-nightscape.jpg"/><div class="work-caption"><p class="work-number">04 — 夜景</p><h3 class="work-title">The city glowing beneath a blue night.</h3><p class="work-meta">Cityscape · Blue hour · Night photography</p></div></article><article class="work-card work-card-large"><img alt="A quiet figure between light and shadow." class="work-art" decoding="async" loading="lazy" src="images/work-cultural-heritage-park.jpg"/><div class="work-caption"><p class="work-number">05 — 文化部文化資產園區</p><h3 class="work-title">A quiet figure between light and shadow.</h3><p class="work-meta">Black &amp; white · Street · Architecture</p></div></article><article class="work-card work-card-small"><img alt="A red boat waiting beside the water." class="work-art" decoding="async" loading="lazy" src="images/work-chaowu-boat.jpg"/><div class="work-caption"><p class="work-number">06 — 朝霧碼頭</p><h3 class="work-title">A red boat waiting beside the water.</h3><p class="work-meta">Landscape · Boat · Sun Moon Lake</p></div></article></div>
+</section>
+<section aria-labelledby="howTitle" class="how-section" id="how">
+<div class="how-heading">
+<p class="section-kicker">Create in 3 Steps</p>
+<h2 class="section-title" id="howTitle">Beautiful presentations in under a minute.</h2>
+<p class="section-description">
           From one photograph to a finished presentation — simple, private,
           and entirely in your browser.
         </p>
-      </div>
-
-      <div class="how-grid">
-        <article class="how-card">
-          <span class="how-step" data-step="01">01</span>
-          <h3>Upload</h3>
-          <p>Choose a favorite photograph from your device. Your image stays private and is never uploaded to our server.</p>
-          <div class="how-visual" aria-hidden="true">
-            <div class="how-upload-window"></div>
-          </div>
-        </article>
-
-        <article class="how-card">
-          <span class="how-step" data-step="02">02</span>
-          <h3>Customize</h3>
-          <p>Move and resize the information panel, scale the photograph, select a material, and add your signature.</p>
-          <div class="how-visual" aria-hidden="true">
-            <div class="how-photo"></div>
-            <div class="how-info-mini"></div>
-          </div>
-        </article>
-
-        <article class="how-card">
-          <span class="how-step" data-step="03">03</span>
-          <h3>Download</h3>
-          <p>Save one polished image, ready to keep or share.</p>
-          <div class="how-visual" aria-hidden="true">
-            <div class="how-download-sheet"></div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="studio-intro" aria-labelledby="studioTitle">
-      <div class="section-heading">
-        <p class="section-kicker">Photo Studio</p>
-        <h2 class="section-title" id="studioTitle">
+</div>
+<div class="how-grid">
+<article class="how-card">
+<span class="how-step" data-step="01">01</span>
+<h3>Upload</h3>
+<p>Choose a favorite photograph from your device. Your image stays private and is never uploaded to our server.</p>
+<div aria-hidden="true" class="how-visual">
+<div class="how-upload-window"></div>
+</div>
+</article>
+<article class="how-card">
+<span class="how-step" data-step="02">02</span>
+<h3>Customize</h3>
+<p>Move and resize the information panel, scale the photograph, select a material, and add your signature.</p>
+<div aria-hidden="true" class="how-visual">
+<div class="how-photo"></div>
+<div class="how-info-mini"></div>
+</div>
+</article>
+<article class="how-card">
+<span class="how-step" data-step="03">03</span>
+<h3>Download</h3>
+<p>Save one polished image, ready to keep or share.</p>
+<div aria-hidden="true" class="how-visual">
+<div class="how-download-sheet"></div>
+</div>
+</article>
+</div>
+</section>
+<section aria-labelledby="studioTitle" class="studio-intro">
+<div class="section-heading">
+<p class="section-kicker">Photo Studio</p>
+<h2 class="section-title" id="studioTitle">
           Give one photograph a beautiful presentation.
         </h2>
-        <p class="section-description">
+<p class="section-description">
           Choose a photograph to view its date, camera, lens, aperture,
           shutter speed, ISO, and focal length in one clean frame.
         </p>
-      </div>
-    </section>
-
-    <section class="workspace" id="studio">
-      <div class="upload-view" id="uploadView">
-        <div class="upload-card" id="uploadCard">
-          <div class="upload-icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="3" y="5" width="18" height="15" rx="3"></rect>
-              <circle cx="8.5" cy="10" r="1.5"></circle>
-              <path d="M4 17l4.5-4.5 3.5 3 2.5-2.5L20 18"></path>
-            </svg>
-          </div>
-
-          <h2 class="upload-title">Choose a photograph</h2>
-
-          <p class="upload-description">
+</div>
+</section>
+<section class="workspace" id="studio">
+<div class="upload-view" id="uploadView">
+<div class="upload-card" id="uploadCard">
+<div aria-hidden="true" class="upload-icon">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 24 24">
+<rect height="15" rx="3" width="18" x="3" y="5"></rect>
+<circle cx="8.5" cy="10" r="1.5"></circle>
+<path d="M4 17l4.5-4.5 3.5 3 2.5-2.5L20 18"></path>
+</svg>
+</div>
+<h2 class="upload-title">Choose a photograph</h2>
+<p class="upload-description">
             選擇一張照片，立即查看拍攝日期與相機設定。
             支援 JPG、PNG、HEIC 與 WebP。
           </p>
-
-          <button class="primary-button" id="chooseButton" type="button">
+<button class="primary-button" id="chooseButton" type="button">
             選擇一張照片
           </button>
-
-          <p class="privacy-note">
+<p class="privacy-note">
             照片只會在目前的裝置中開啟，不會上傳到網站伺服器。
           </p>
-
-          <p class="error-message" id="errorMessage" role="alert"></p>
-        </div>
-      </div>
-
-      <div class="photo-view" id="photoView">
-        <div class="photo-stage" id="photoStage">
-          <img
-            class="photo-preview"
-            id="photoPreview"
-            alt="Selected photograph"
-          />
-
-          <div class="photo-toolbar">
-            <div class="toolbar-group">
-              <button
-                class="toolbar-button"
-                id="changeButton"
-                type="button"
-                aria-label="重新選擇照片"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M3 12a9 9 0 0 1 15.4-6.3L21 8"></path>
-                  <path d="M21 3v5h-5"></path>
-                  <path d="M21 12a9 9 0 0 1-15.4 6.3L3 16"></path>
-                  <path d="M3 21v-5h5"></path>
-                </svg>
-
-                <span class="button-label">重新選擇</span>
-              </button>
-            </div>
-
-            <div class="toolbar-group">
-              <button
-                class="toolbar-button"
-                id="toggleInfoButton"
-                type="button"
-                aria-label="隱藏照片資訊"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 11v5"></path>
-                  <path d="M12 8h.01"></path>
-                </svg>
-
-                <span class="button-label" id="toggleInfoLabel">
+<p class="error-message" id="errorMessage" role="alert"></p>
+</div>
+</div>
+<div class="photo-view" id="photoView">
+<div class="photo-stage" id="photoStage">
+<img alt="Selected photograph" class="photo-preview" id="photoPreview"/>
+<div class="photo-toolbar">
+<div class="toolbar-group">
+<button aria-label="重新選擇照片" class="toolbar-button" id="changeButton" type="button">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M3 12a9 9 0 0 1 15.4-6.3L21 8"></path>
+<path d="M21 3v5h-5"></path>
+<path d="M21 12a9 9 0 0 1-15.4 6.3L3 16"></path>
+<path d="M3 21v-5h5"></path>
+</svg>
+<span class="button-label">重新選擇</span>
+</button>
+</div>
+<div class="toolbar-group">
+<button aria-label="隱藏照片資訊" class="toolbar-button" id="toggleInfoButton" type="button">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M12 11v5"></path>
+<path d="M12 8h.01"></path>
+</svg>
+<span class="button-label" id="toggleInfoLabel">
                   隱藏資訊
                 </span>
-              </button>
-
-              <button
-                class="toolbar-button"
-                id="downloadButton"
-                type="button"
-                aria-label="下載含資訊框的照片"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 3v12"></path>
-                  <path d="M7 10l5 5 5-5"></path>
-                  <path d="M5 21h14"></path>
-                </svg>
-
-                <span class="button-label">下載成品</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="studio-controls" aria-label="照片與資訊框設定">
-            <div class="control-row">
-              <div class="control-label"><span>Photo zoom</span><span id="zoomValue">100%</span></div>
-              <div class="zoom-row">
-                <input class="zoom-slider" id="zoomSlider" type="range" min="100" max="300" value="100" step="1" aria-label="照片等比例縮放">
-                <button class="control-mini-button" id="resetPhotoButton" type="button">重設</button>
-              </div>
-            </div>
-            <div class="control-row">
-              <div class="control-label"><span>Info card size</span><span id="infoScaleValue">72%</span></div>
-              <div class="zoom-row">
-                <input class="zoom-slider" id="infoScaleSlider" type="range" min="40" max="110" value="72" step="1" aria-label="資訊卡等比例縮放">
-                <button class="control-mini-button" id="resetInfoButton" type="button">重設</button>
-              </div>
-            </div>
-            <div class="control-row">
-              <label class="control-label" for="outputRatio"><span>Output ratio</span><span id="outputRatioLabel">自動偵測</span></label>
-              <select class="ratio-select" id="outputRatio" aria-label="下載成品比例">
-                <option value="photo">依照原始照片（自動）</option>
-                <option value="3:2">相機橫幅 3 : 2</option>
-                <option value="4:3">經典橫幅 4 : 3</option>
-                <option value="16:9">寬螢幕 16 : 9</option>
-                <option value="1:1">正方形 1 : 1</option>
-                <option value="4:5">直式社群 4 : 5</option>
-              </select>
-              <div class="ratio-hint" id="ratioHint">上傳照片後會自動顯示原始比例。</div>
-            </div>
-            <div class="control-row">
-              <label class="control-label" for="signatureInput"><span>Signature</span><span>可自行更改</span></label>
-              <input class="signature-input" id="signatureInput" type="text" value="Chun Chun" maxlength="40" placeholder="輸入名字">
-            </div>
-          </div>
-
-          <div class="export-guide" id="exportGuide" aria-hidden="true"></div>
-
-          <div class="stage-brand-watermark" aria-hidden="true"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#23423d"/>
-      <stop offset="0.55" stop-color="#6d837a"/>
-      <stop offset="1" stop-color="#d8b98a"/>
-    </linearGradient>
-  </defs>
-  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
-  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
-  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
-  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</button>
+<button aria-label="下載含資訊框的照片" class="toolbar-button" id="downloadButton" type="button">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M12 3v12"></path>
+<path d="M7 10l5 5 5-5"></path>
+<path d="M5 21h14"></path>
+</svg>
+<span class="button-label">下載成品</span>
+</button>
+</div>
+</div>
+<div aria-label="照片與資訊框設定" class="studio-controls">
+<div class="control-row">
+<div class="control-label"><span>Photo zoom</span><span id="zoomValue">100%</span></div>
+<div class="zoom-row">
+<input aria-label="照片等比例縮放" class="zoom-slider" id="zoomSlider" max="300" min="100" step="1" type="range" value="100"/>
+<button class="control-mini-button" id="resetPhotoButton" type="button">重設</button>
+</div>
+</div>
+<div class="control-row">
+<div class="control-label"><span>Info card size</span><span id="infoScaleValue">72%</span></div>
+<div class="zoom-row">
+<input aria-label="資訊卡等比例縮放" class="zoom-slider" id="infoScaleSlider" max="110" min="40" step="1" type="range" value="72"/>
+<button class="control-mini-button" id="resetInfoButton" type="button">重設</button>
+</div>
+</div>
+<div class="control-row">
+<label class="control-label" for="outputRatio"><span>Output ratio</span><span id="outputRatioLabel">自動偵測</span></label>
+<select aria-label="下載成品比例" class="ratio-select" id="outputRatio">
+<option value="photo">依照原始照片（自動）</option>
+<option value="3:2">相機橫幅 3 : 2</option>
+<option value="4:3">經典橫幅 4 : 3</option>
+<option value="16:9">寬螢幕 16 : 9</option>
+<option value="1:1">正方形 1 : 1</option>
+<option value="4:5">直式社群 4 : 5</option>
+</select>
+<div class="ratio-hint" id="ratioHint">上傳照片後會自動顯示原始比例。</div>
+</div>
+<div class="control-row">
+<label class="control-label" for="signatureInput"><span>Signature</span><span>可自行更改</span></label>
+<input class="signature-input" id="signatureInput" maxlength="40" placeholder="輸入名字" type="text" value="Chun Chun"/>
+</div>
+</div>
+<div aria-hidden="true" class="export-guide" id="exportGuide"></div>
+<div aria-hidden="true" class="stage-brand-watermark"><svg aria-hidden="true" class="brand-symbol" focusable="false" viewbox="0 0 120 120">
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="brandStroke" x1="18" x2="105" y1="12" y2="105">
+<stop offset="0" stop-color="#23423d"></stop>
+<stop offset="0.55" stop-color="#6d837a"></stop>
+<stop offset="1" stop-color="#d8b98a"></stop>
+</lineargradient>
+</defs>
+<path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-linecap="round" stroke-width="3.4"></path>
+<path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.1"></path>
+<path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"></path>
+<circle cx="83.5" cy="38" fill="#d8b98a" r="1.7"></circle>
+<circle cx="88.5" cy="44" fill="#d8b98a" opacity=".75" r="1.1"></circle>
 </svg><span>Through Chun Chun's Lens</span></div>
-
-          <aside
-            class="info-panel"
-            id="infoPanel"
-            aria-label="照片資訊"
-          >
-            <div class="drag-handle" aria-hidden="true"></div>
-            <button class="resize-handle" id="resizeHandle" type="button" hidden aria-hidden="true" tabindex="-1"></button>
-
-            <div class="metadata-stack">
-              <p class="metadata-line camera-line hidden" id="cameraLine"></p>
-              <p class="metadata-line secondary-line" id="basicLine">—</p>
-              <p class="metadata-line settings-line hidden" id="settingsLine"></p>
-              <p class="exif-loading" id="exifLoading">正在讀取相機資訊…</p>
-            </div>
-
-            <div class="signature">
-              <p class="signature-name" id="signatureName">— Chun Chun</p>
-            </div>
-          </aside>
-        </div>
-      </div>
-
-      <input
-        class="hidden-input"
-        id="fileInput"
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
-      />
-    </section>
-
-    <section class="content-section" id="story" aria-labelledby="storyTitle">
-      <div class="story-panel">
-        <div class="story-mark brand-story-placeholder" aria-label="About 人像照片將於下一階段置入">
-          <div class="about-photo-placeholder" aria-hidden="true">
-            <span>Your About Photo</span>
-          </div>
-        </div>
-
-        <div class="story-copy">
-          <p class="section-kicker">The Idea Behind</p>
-          <h2 class="section-title" id="storyTitle">
+<aside aria-label="照片資訊" class="info-panel" id="infoPanel">
+<div aria-hidden="true" class="drag-handle"></div>
+<button aria-hidden="true" class="resize-handle" hidden="" id="resizeHandle" tabindex="-1" type="button"></button>
+<div class="metadata-stack">
+<p class="metadata-line camera-line hidden" id="cameraLine"></p>
+<p class="metadata-line secondary-line" id="basicLine">—</p>
+<p class="metadata-line settings-line hidden" id="settingsLine"></p>
+<p class="exif-loading" id="exifLoading">正在讀取相機資訊…</p>
+</div>
+<div class="signature">
+<p class="signature-name" id="signatureName">— Chun Chun</p>
+</div>
+</aside>
+</div>
+</div>
+<input accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="hidden-input" id="fileInput" type="file">
+</input></section>
+<section aria-labelledby="storyTitle" class="content-section" id="story">
+<div class="story-panel">
+<div aria-label="Chun Chun holding a camera beneath pink blossoms" class="story-mark brand-story-placeholder"><img alt="Chun Chun holding a camera beneath pink blossoms" class="about-photo" decoding="async" loading="lazy" src="images/about-chun-chun.jpg"/></div>
+<div class="story-copy">
+<p class="section-kicker">The Idea Behind</p>
+<h2 class="section-title" id="storyTitle">
             It began with a simple wish.
           </h2>
-
-          <p>
+<p>
             I wanted a cleaner and more beautiful way to present my photographs
             together with the camera settings behind them.
           </p>
-
-          <p>
+<p>
             A photograph is more than a finished image. The shutter speed,
             aperture, ISO, lens, light, and timing are all part of the moment
             that created it.
           </p>
-
-          <p>
+<p>
             So I started building <strong>Through Chun Chun's Lens</strong> —
             a quiet photography space where one image can be viewed as a complete
             story, not just another file in a gallery.
           </p>
-
-          <p>
+<p>
             This website was shaped step by step by Chun Chun, with the help of
             ChatGPT, and made for anyone who enjoys preserving the feeling behind
             every frame.
           </p>
-
-          <div class="social-actions" aria-label="追蹤 Chun Chun">
-            <a
-              class="social-button"
-              href="https://www.instagram.com/chunchunchun0815/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5"></rect>
-                <circle cx="12" cy="12" r="4"></circle>
-                <circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"></circle>
-              </svg>
+<div aria-label="追蹤 Chun Chun" class="social-actions">
+<a class="social-button" href="https://www.instagram.com/chunchunchun0815/" rel="noopener noreferrer" target="_blank">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="18" rx="5" width="18" x="3" y="3"></rect>
+<circle cx="12" cy="12" r="4"></circle>
+<circle cx="17.5" cy="6.5" fill="currentColor" r=".8" stroke="none"></circle>
+</svg>
               Instagram
             </a>
-
-            <a
-              class="social-button"
-              href="https://www.youtube.com/@tseng-chun-chun"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="M21 12s0-4-1-6c-.6-1.2-1.7-1.5-3-1.6C15 4.2 12 4.2 12 4.2s-3 0-5 .2C5.7 4.5 4.6 4.8 4 6c-1 2-1 6-1 6s0 4 1 6c.6 1.2 1.7 1.5 3 1.6 2 .2 5 .2 5 .2s3 0 5-.2c1.3-.1 2.4-.4 3-1.6 1-2 1-6 1-6Z"></path>
-                <path d="m10 9 5 3-5 3V9Z"></path>
-              </svg>
+<a class="social-button" href="https://www.youtube.com/@tseng-chun-chun" rel="noopener noreferrer" target="_blank">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M21 12s0-4-1-6c-.6-1.2-1.7-1.5-3-1.6C15 4.2 12 4.2 12 4.2s-3 0-5 .2C5.7 4.5 4.6 4.8 4 6c-1 2-1 6-1 6s0 4 1 6c.6 1.2 1.7 1.5 3 1.6 2 .2 5 .2 5 .2s3 0 5-.2c1.3-.1 2.4-.4 3-1.6 1-2 1-6 1-6Z"></path>
+<path d="m10 9 5 3-5 3V9Z"></path>
+</svg>
               YouTube
             </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <section class="install-section" id="install" aria-labelledby="installTitle">
-      <div class="install-copy">
-        <p class="section-kicker">Add to Home Screen</p>
-        <h2 class="install-title" id="installTitle">Keep Photo Studio one tap away.</h2>
-        <p class="install-description">
+</div>
+</div>
+</div>
+</section>
+<section aria-labelledby="installTitle" class="install-section" id="install">
+<div class="install-copy">
+<p class="section-kicker">Add to Home Screen</p>
+<h2 class="install-title" id="installTitle">Keep Photo Studio one tap away.</h2>
+<p class="install-description">
           Add Through Chun Chun's Lens to your phone or tablet Home Screen
           and open it just like an app. No App Store and no separate download required.
         </p>
-        <div class="install-badges" aria-label="支援裝置">
-          <span class="install-badge">iPhone &amp; iPad · Safari</span>
-          <span class="install-badge">Android · Chrome</span>
-        </div>
-      </div>
-
-      <div class="install-steps" aria-label="加入主畫面的三個步驟">
-        <article class="install-card">
-          <span class="install-step-label">STEP 01</span>
-          <h3>Open Share</h3>
-          <p>In Safari, tap the Share button at the top or bottom of the screen.</p>
-          <div class="install-visual" aria-hidden="true">
-            <div class="share-icon"></div>
-          </div>
-        </article>
-
-        <div class="install-arrow" aria-hidden="true">→</div>
-
-        <article class="install-card">
-          <span class="install-step-label">STEP 02</span>
-          <h3 class="install-title-step-two"><span>Add to</span><span>Home Screen</span></h3>
-          <p>Scroll through the Share menu and choose “Add to Home Screen”.</p>
-          <div class="install-visual" aria-hidden="true">
-            <div class="ios-menu">
-              <div class="ios-menu-row">
-                <div class="ios-menu-icon">＋</div>
-                <div class="ios-menu-text">Add to<br>Home Screen</div>
-              </div>
-              <div class="ios-menu-divider"></div>
-              <div class="ios-menu-muted">Edit Home Screen</div>
-            </div>
-          </div>
-        </article>
-
-        <div class="install-arrow" aria-hidden="true">→</div>
-
-        <article class="install-card">
-          <span class="install-step-label">STEP 03</span>
-          <h3>Tap Add</h3>
-          <p>Confirm by tapping Add. The shortcut will appear on your Home Screen.</p>
-          <div class="install-visual" aria-hidden="true">
-            <div class="app-icon-wrap">
-              <div class="app-icon"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="appIconStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#f5f2e9"/>
-      <stop offset="0.56" stop-color="#d7e1d9"/>
-      <stop offset="1" stop-color="#d8b98a"/>
-    </linearGradient>
-  </defs>
-  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#appIconStroke)" stroke-width="3.4" stroke-linecap="round"/>
-  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#appIconStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
-  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
-  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+<div aria-label="支援裝置" class="install-badges">
+<span class="install-badge">iPhone &amp; iPad · Safari</span>
+<span class="install-badge">Android · Chrome</span>
+</div>
+</div>
+<div aria-label="加入主畫面的三個步驟" class="install-steps">
+<article class="install-card">
+<span class="install-step-label">STEP 01</span>
+<h3>Open Share</h3>
+<p>In Safari, tap the Share button at the top or bottom of the screen.</p>
+<div aria-hidden="true" class="install-visual">
+<div class="share-icon"></div>
+</div>
+</article>
+<div aria-hidden="true" class="install-arrow">→</div>
+<article class="install-card">
+<span class="install-step-label">STEP 02</span>
+<h3 class="install-title-step-two"><span>Add to</span><span>Home Screen</span></h3>
+<p>Scroll through the Share menu and choose “Add to Home Screen”.</p>
+<div aria-hidden="true" class="install-visual">
+<div class="ios-menu">
+<div class="ios-menu-row">
+<div class="ios-menu-icon">＋</div>
+<div class="ios-menu-text">Add to<br/>Home Screen</div>
+</div>
+<div class="ios-menu-divider"></div>
+<div class="ios-menu-muted">Edit Home Screen</div>
+</div>
+</div>
+</article>
+<div aria-hidden="true" class="install-arrow">→</div>
+<article class="install-card">
+<span class="install-step-label">STEP 03</span>
+<h3>Tap Add</h3>
+<p>Confirm by tapping Add. The shortcut will appear on your Home Screen.</p>
+<div aria-hidden="true" class="install-visual">
+<div class="app-icon-wrap">
+<div class="app-icon"><svg aria-hidden="true" class="brand-symbol" focusable="false" viewbox="0 0 120 120">
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="appIconStroke" x1="18" x2="105" y1="12" y2="105">
+<stop offset="0" stop-color="#f5f2e9"></stop>
+<stop offset="0.56" stop-color="#d7e1d9"></stop>
+<stop offset="1" stop-color="#d8b98a"></stop>
+</lineargradient>
+</defs>
+<path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#appIconStroke)" stroke-linecap="round" stroke-width="3.4"></path>
+<path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#appIconStroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.1"></path>
+<path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"></path>
+<circle cx="83.5" cy="38" fill="#d8b98a" r="1.7"></circle>
+<circle cx="88.5" cy="44" fill="#d8b98a" opacity=".75" r="1.1"></circle>
 </svg></div>
-              <div class="app-icon-name">Through Chun Chun's Lens</div>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <p class="install-platform-note">
+<div class="app-icon-name">Through Chun Chun's Lens</div>
+</div>
+</div>
+</article>
+</div>
+<p class="install-platform-note">
         iPhone / iPad: Safari Share menu · Android: Chrome menu → Add to Home screen
       </p>
-    </section>
-
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <div>
-          <div class="footer-brand"><span class="brand-lockup"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#23423d"/>
-      <stop offset="0.55" stop-color="#6d837a"/>
-      <stop offset="1" stop-color="#d8b98a"/>
-    </linearGradient>
-  </defs>
-  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
-  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
-  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
-  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</section>
+<footer class="site-footer">
+<div class="footer-inner">
+<div>
+<div class="footer-brand"><span class="brand-lockup"><svg aria-hidden="true" class="brand-symbol" focusable="false" viewbox="0 0 120 120">
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="brandStroke" x1="18" x2="105" y1="12" y2="105">
+<stop offset="0" stop-color="#23423d"></stop>
+<stop offset="0.55" stop-color="#6d837a"></stop>
+<stop offset="1" stop-color="#d8b98a"></stop>
+</lineargradient>
+</defs>
+<path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-linecap="round" stroke-width="3.4"></path>
+<path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.1"></path>
+<path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"></path>
+<circle cx="83.5" cy="38" fill="#d8b98a" r="1.7"></circle>
+<circle cx="88.5" cy="44" fill="#d8b98a" opacity=".75" r="1.1"></circle>
 </svg><span class="brand-wordmark">Through Chun Chun's Lens</span></span></div>
-          <div
-            class="creations-counter loading"
-            id="creationsCounter"
-            aria-live="polite"
-            title="下載完成的作品總數"
-          >
-            <span class="creations-counter-icon" aria-hidden="true">🌍</span>
-            <span id="creationsCount">—</span>
-            <span>Creations</span>
-          </div>
-          <p class="footer-line">
-            One photograph at a time.<br>
+<div aria-live="polite" class="creations-counter loading" id="creationsCounter" title="下載完成的作品總數">
+<span aria-hidden="true" class="creations-counter-icon">🌍</span>
+<span id="creationsCount">—</span>
+<span>Creations</span>
+</div>
+<p class="footer-line">
+            One photograph at a time.<br/>
             © 2026 Chun Chun
           </p>
-        </div>
-
-        <div class="footer-links">
-          <a href="#works">Featured Works</a>
-          <a href="#how">How It Works</a>
-          <a href="#studio">Photo Studio</a>
-          <a href="#story">The Story</a>
-          <a href="#install">Add to Home Screen</a>
-          <a href="https://www.instagram.com/chunchunchun0815/" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="https://www.youtube.com/@tseng-chun-chun" target="_blank" rel="noopener noreferrer">YouTube</a>
-        </div>
-      </div>
-    </footer>
-  </main>
-
-  <script>
+</div>
+<div class="footer-links">
+<a href="#works">Featured Works</a>
+<a href="#how">How It Works</a>
+<a href="#studio">Photo Studio</a>
+<a href="#story">The Story</a>
+<a href="#install">Add to Home Screen</a>
+<a href="https://www.instagram.com/chunchunchun0815/" rel="noopener noreferrer" target="_blank">Instagram</a>
+<a href="https://www.youtube.com/@tseng-chun-chun" rel="noopener noreferrer" target="_blank">YouTube</a>
+</div>
+</div>
+</footer>
+</main>
+<script>
     const fileInput = document.getElementById("fileInput");
     const chooseButton = document.getElementById("chooseButton");
     const changeButton = document.getElementById("changeButton");
@@ -3944,6 +3808,7 @@
     fileInput.addEventListener("change", handleFileSelection);
 
     loadCreationsCount();
+    loadDemoPhoto();
     zoomSlider.addEventListener("input", () => setPhotoScale(Number(zoomSlider.value) / 100));
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
     // 照片只由上方縮放滑桿控制，避免移動資訊卡時誤觸照片。
@@ -3955,6 +3820,20 @@
     signatureInput.addEventListener("input", updateSignature);
     applyInfoPanelScale();
     window.addEventListener("resize", updateExportGuide);
+
+
+
+    async function loadDemoPhoto() {
+      try {
+        const response = await fetch("images/photo-studio.jpg");
+        if (!response.ok) throw new Error("Demo photo unavailable");
+        const blob = await response.blob();
+        const demoFile = new File([blob], "chun-chun-nightscape.jpg", { type: blob.type || "image/jpeg" });
+        await openPhoto(demoFile);
+      } catch (error) {
+        // Keep the normal upload screen available when opened outside a web server.
+      }
+    }
 
     function openFilePicker() {
       fileInput.value = "";
