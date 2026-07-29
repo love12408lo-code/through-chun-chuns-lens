@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V6 Pre-Photo Final Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V6.2 Pre-Photo Scale & App Icon Fix Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -16,11 +16,21 @@
 
   <title>Through Chun Chun's Lens</title>
 
-  <link rel="icon" type="image/svg+xml" href="through-chun-chuns-lens-favicon.svg">
-  <link rel="apple-touch-icon" sizes="180x180" href="through-chun-chuns-lens-app-icon.png">
+  <link rel="icon" type="image/svg+xml" href="through-chun-chuns-lens-favicon-v6-2.svg?v=6.2">
+  <link rel="icon" type="image/png" sizes="192x192" href="through-chun-chuns-lens-icon-192-v6-2.png?v=6.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="through-chun-chuns-lens-apple-touch-icon-v6-2.png?v=6.2">
+  <link rel="manifest" href="through-chun-chuns-lens-manifest-v6-2.webmanifest?v=6.2">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Through Chun Chun's Lens">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#23423d">
 
-  <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js">    window.addEventListener("resize", () => {
+      fitInfoPanelToStage({ onlyShrink: true });
+      keepInfoPanelInsideStage();
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2864,16 +2874,17 @@
       stroke: rgba(255,255,255,.94);
     }
 
-    /* Photo Studio info card: independent component sizing */
+    /* Photo Studio info card: one complete object that scales proportionally.
+       The internal typography and spacing never reflow while resizing. */
     .info-panel {
-      width: clamp(340px, 34vw, 520px);
-      min-width: 0;
-      max-width: calc(100% - 52px);
+      width: 520px;
+      min-width: 520px;
+      max-width: none;
       padding: 18px 22px 20px;
       border-radius: 22px;
       transform: scale(var(--info-scale));
       transform-origin: left bottom;
-      contain: layout style;
+      contain: style;
     }
 
     .metadata-stack { gap: 9px; }
@@ -3100,6 +3111,56 @@
       font-size: 9px;
       line-height: 1.25;
       letter-spacing: -.01em;
+    }
+
+  
+
+    /* V6.2 — True proportional info-card resizing */
+    .info-panel {
+      width: 520px !important;
+      min-width: 520px !important;
+      max-width: none !important;
+      padding: 18px 22px 20px !important;
+      overflow: visible;
+    }
+
+    .info-panel .metadata-stack,
+    .info-panel .signature {
+      width: 100%;
+    }
+
+    .info-panel .metadata-line {
+      overflow: visible;
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+    }
+
+    .info-panel .camera-line,
+    .info-panel .secondary-line,
+    .info-panel .settings-line,
+    .info-panel .signature-name {
+      font-size: initial;
+    }
+
+    .info-panel .camera-line { font-size: 20px; line-height: 1.35; }
+    .info-panel .secondary-line,
+    .info-panel .settings-line { font-size: 17px; line-height: 1.45; }
+    .info-panel .signature-name { font-size: 13px; line-height: 1.4; }
+
+    @media (max-width: 900px) {
+      .info-panel { width: 520px !important; min-width: 520px !important; max-width: none !important; }
+    }
+
+    @media (max-width: 720px) {
+      .info-panel { width: 520px !important; min-width: 520px !important; max-width: none !important; }
+    }
+
+    @media (max-width: 420px) {
+      .info-panel { width: 520px !important; min-width: 520px !important; max-width: none !important; }
+      .info-panel .camera-line,
+      .info-panel .secondary-line,
+      .info-panel .settings-line { white-space: normal; }
     }
 
   </style>
@@ -4100,13 +4161,25 @@
     }
 
     function setInfoScale(nextScale) {
-      infoScale = Math.min(2, Math.max(0.5, nextScale));
+      infoScale = Math.min(2, Math.max(0.35, nextScale));
       applyInfoPanelScale();
     }
 
     function resetInfoPanelScale() {
       infoScale = 1;
       applyInfoPanelScale();
+    }
+
+    function fitInfoPanelToStage({ onlyShrink = true } = {}) {
+      if (!photoStage) return;
+      const stageWidth = Math.max(1, photoStage.clientWidth);
+      const safeWidth = Math.max(180, stageWidth - 32);
+      const naturalWidth = 520;
+      const fittedScale = Math.min(1, safeWidth / naturalWidth);
+      if (!onlyShrink || infoScale > fittedScale) {
+        infoScale = Math.max(0.35, fittedScale);
+        applyInfoPanelScale();
+      }
     }
 
     function keepInfoPanelInsideStage() {
@@ -4531,9 +4604,12 @@
       if (!resizing) return;
       const deltaX = event.clientX - resizeStartX;
       const deltaY = event.clientY - resizeStartY;
-      const widthScale = (resizeBaseWidth * resizeStartScale + deltaX) / resizeBaseWidth;
-      const heightScale = (resizeBaseHeight * resizeStartScale + deltaY) / resizeBaseHeight;
-      const nextScale = Math.max(widthScale, heightScale);
+      const startWidth = resizeBaseWidth * resizeStartScale;
+      const startHeight = resizeBaseHeight * resizeStartScale;
+      const diagonal = Math.max(1, Math.hypot(startWidth, startHeight));
+      const projectedDelta = (deltaX * startWidth + deltaY * startHeight) / diagonal;
+      const nextDiagonal = Math.max(diagonal * 0.35, diagonal + projectedDelta);
+      const nextScale = resizeStartScale * (nextDiagonal / diagonal);
       setInfoScale(nextScale);
       event.preventDefault();
     }
