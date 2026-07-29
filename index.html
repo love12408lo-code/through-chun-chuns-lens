@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Through Chun Chun's Lens V5.0 Responsive Home Screen Guide Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
+<!-- Through Chun Chun's Lens V6 Pre-Photo Final Edition - photo scaling, draggable and corner-resizable info panel, metallic glass themes, editable signature and finished-photo export -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -15,6 +15,10 @@
   />
 
   <title>Through Chun Chun's Lens</title>
+
+  <link rel="icon" type="image/svg+xml" href="through-chun-chuns-lens-favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="through-chun-chuns-lens-app-icon.png">
+  <meta name="theme-color" content="#23423d">
 
   <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -2720,6 +2724,285 @@
         animation-iteration-count: 1 !important;
       }
     }
+
+
+    /* =========================
+       V6 PRE-PHOTO FINAL — Brand, RWD, Studio Card & Polish
+       ========================= */
+
+    :root {
+      --brand-ink: #23423d;
+      --brand-sage: #6d837a;
+      --brand-gold: #d8b98a;
+      --brand-cream: #f6f3ef;
+    }
+
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-symbol {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      overflow: visible;
+    }
+
+    .brand-wordmark {
+      color: var(--brand-ink);
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -.018em;
+      white-space: nowrap;
+    }
+
+    .nav-logo {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    .top-nav {
+      min-height: 74px;
+      padding-inline: 20px 24px;
+    }
+
+    .story-brand-preview {
+      width: min(300px, 76%);
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .story-brand-preview .brand-symbol {
+      width: min(210px, 70%);
+      height: auto;
+      filter: drop-shadow(0 14px 28px rgba(20,52,55,.18));
+    }
+
+    .story-brand-name {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: .98;
+      letter-spacing: -.03em;
+    }
+
+    .footer-brand .brand-symbol { width: 54px; height: 54px; }
+    .footer-brand .brand-wordmark { font-size: clamp(28px, 4vw, 42px); }
+
+    /* Card breathing effect: shadow + gloss + 1.02 scale */
+    .work-card,
+    .how-card,
+    .install-card,
+    .upload-card,
+    .story-panel,
+    .social-button {
+      transform-origin: center;
+    }
+
+    .work-card::before,
+    .how-card::after,
+    .install-card::before,
+    .upload-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      border-radius: inherit;
+      background: linear-gradient(115deg, transparent 12%, rgba(255,255,255,.34) 37%, transparent 61%);
+      opacity: 0;
+      transform: translateX(-42%);
+      transition: opacity .38s ease, transform .58s cubic-bezier(.2,.8,.2,1);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .work-card:hover,
+      .how-card:hover,
+      .install-card:hover,
+      .upload-card:hover {
+        transform: translateY(-7px) scale(1.02);
+        box-shadow:
+          0 34px 86px rgba(39,72,77,.18),
+          0 10px 28px rgba(255,255,255,.24),
+          inset 0 1px 0 rgba(255,255,255,.98);
+      }
+
+      .work-card:hover::before,
+      .how-card:hover::after,
+      .install-card:hover::before,
+      .upload-card:hover::before {
+        opacity: .82;
+        transform: translateX(42%);
+      }
+    }
+
+    /* Install title intentionally wraps after “Add to” */
+    .install-title-step-two span { display: block; }
+    .install-title-step-two { font-size: clamp(25px, 2vw, 30px) !important; }
+
+    .app-icon {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .app-icon .brand-symbol {
+      width: 68px;
+      height: 68px;
+      filter: drop-shadow(0 7px 12px rgba(0,0,0,.18));
+    }
+
+    .app-icon .brand-symbol path:first-of-type,
+    .app-icon .brand-symbol path:nth-of-type(2) {
+      stroke: rgba(255,255,255,.94);
+    }
+
+    /* Photo Studio info card: independent component sizing */
+    .info-panel {
+      width: clamp(340px, 34vw, 520px);
+      min-width: 0;
+      max-width: calc(100% - 52px);
+      padding: 18px 22px 20px;
+      border-radius: 22px;
+      transform: scale(var(--info-scale));
+      transform-origin: left bottom;
+      contain: layout style;
+    }
+
+    .metadata-stack { gap: 9px; }
+
+    .metadata-line {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+    }
+
+    .camera-line {
+      font-size: clamp(15px, 1.35vw, 20px);
+      line-height: 1.35;
+      letter-spacing: -.015em;
+      text-wrap: pretty;
+    }
+
+    .secondary-line,
+    .settings-line {
+      font-size: clamp(13px, 1.1vw, 17px);
+      line-height: 1.45;
+      text-wrap: pretty;
+    }
+
+    .signature {
+      margin-top: 14px;
+      padding-top: 13px;
+    }
+
+    .signature-name { font-size: clamp(11px, .9vw, 14px); }
+
+    .stage-brand-watermark {
+      position: absolute;
+      right: 24px;
+      bottom: 22px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(255,255,255,.62);
+      pointer-events: none;
+      text-shadow: 0 2px 10px rgba(0,0,0,.38);
+    }
+
+    .stage-brand-watermark .brand-symbol { width: 34px; height: 34px; opacity: .8; }
+    .stage-brand-watermark .brand-symbol path:first-of-type,
+    .stage-brand-watermark .brand-symbol path:nth-of-type(2) { stroke: currentColor; }
+    .stage-brand-watermark span {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 15px;
+      letter-spacing: -.01em;
+    }
+
+    /* iPad / tablet layout */
+    @media (min-width: 721px) and (max-width: 1100px) {
+      body {
+        padding:
+          max(18px, env(safe-area-inset-top))
+          max(16px, env(safe-area-inset-right))
+          max(22px, env(safe-area-inset-bottom))
+          max(16px, env(safe-area-inset-left));
+      }
+
+      .page { width: 100%; }
+      .hero { min-height: auto; }
+      .hero-container { padding-top: 68px; }
+      .top-nav { border-radius: 20px; }
+      .brand-wordmark { font-size: 20px; }
+      .nav-menu { gap: 16px; }
+      .nav-menu a { font-size: 12px; }
+
+      .workspace { padding: 12px; }
+      .photo-stage {
+        min-height: 64vh;
+        min-height: 64dvh;
+      }
+      .photo-preview {
+        max-width: none;
+        max-height: none;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .info-panel {
+        width: clamp(390px, 52vw, 540px);
+        max-width: calc(100% - 40px);
+        left: 20px;
+        bottom: 20px;
+      }
+
+      .camera-line { font-size: clamp(16px, 2vw, 20px); }
+      .secondary-line, .settings-line { font-size: clamp(14px, 1.65vw, 17px); }
+    }
+
+    @media (max-width: 720px) {
+      .top-nav { min-height: 66px; }
+      .brand-lockup { gap: 8px; }
+      .brand-symbol { width: 38px; height: 38px; }
+      .brand-wordmark { font-size: 18px; }
+
+      .info-panel {
+        width: min(88vw, 390px);
+        max-width: calc(100% - 28px);
+        left: 14px;
+        bottom: 14px;
+        padding: 16px 18px 18px;
+      }
+
+      .camera-line { font-size: 15px; }
+      .secondary-line, .settings-line { font-size: 13px; }
+      .stage-brand-watermark { right: 14px; bottom: 12px; }
+      .stage-brand-watermark span { display: none; }
+      .stage-brand-watermark .brand-symbol { width: 30px; height: 30px; }
+    }
+
+    @media (max-width: 420px) {
+      .brand-wordmark { font-size: 16px; }
+      .info-panel {
+        width: calc(100% - 24px);
+        max-width: none;
+        left: 12px;
+        bottom: 12px;
+      }
+    }
+
   </style>
 </head>
 
@@ -2732,7 +3015,20 @@
   <main class="page">
     <header class="hero" id="top">
       <nav class="top-nav" aria-label="主要導覽">
-        <a href="#top" class="nav-logo">Through Chun Chun's Lens</a>
+        <a href="#top" class="nav-logo" aria-label="Through Chun Chun's Lens 首頁"><span class="brand-lockup"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23423d"/>
+      <stop offset="0.55" stop-color="#6d837a"/>
+      <stop offset="1" stop-color="#d8b98a"/>
+    </linearGradient>
+  </defs>
+  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
+  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
+  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</svg><span class="brand-wordmark">Through Chun Chun's Lens</span></span></a>
 
         <div class="nav-menu">
           <a href="#works">Featured Works</a>
@@ -3037,6 +3333,21 @@
             </div>
           </div>
 
+          <div class="stage-brand-watermark" aria-hidden="true"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23423d"/>
+      <stop offset="0.55" stop-color="#6d837a"/>
+      <stop offset="1" stop-color="#d8b98a"/>
+    </linearGradient>
+  </defs>
+  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
+  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
+  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</svg><span>Through Chun Chun's Lens</span></div>
+
           <aside
             class="info-panel"
             id="infoPanel"
@@ -3069,10 +3380,21 @@
 
     <section class="content-section" id="story" aria-labelledby="storyTitle">
       <div class="story-panel">
-        <div class="story-mark" aria-hidden="true">
-          <div class="story-signature">
-            Through<br>Chun Chun's Lens
-          </div>
+        <div class="story-mark brand-story-placeholder" aria-label="About 照片將於下一階段置入">
+          <div class="story-brand-preview"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23423d"/>
+      <stop offset="0.55" stop-color="#6d837a"/>
+      <stop offset="1" stop-color="#d8b98a"/>
+    </linearGradient>
+  </defs>
+  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
+  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
+  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</svg><span class="story-brand-name">Through Chun Chun's Lens</span></div>
         </div>
 
         <div class="story-copy">
@@ -3165,7 +3487,7 @@
 
         <article class="install-card">
           <span class="install-step-label">STEP 02</span>
-          <h3>Add to Home Screen</h3>
+          <h3 class="install-title-step-two"><span>Add to</span><span>Home Screen</span></h3>
           <p>Scroll through the Share menu and choose “Add to Home Screen”.</p>
           <div class="install-visual" aria-hidden="true">
             <div class="ios-menu">
@@ -3187,7 +3509,20 @@
           <p>Confirm by tapping Add. The shortcut will appear on your Home Screen.</p>
           <div class="install-visual" aria-hidden="true">
             <div class="app-icon-wrap">
-              <div class="app-icon"></div>
+              <div class="app-icon"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23423d"/>
+      <stop offset="0.55" stop-color="#6d837a"/>
+      <stop offset="1" stop-color="#d8b98a"/>
+    </linearGradient>
+  </defs>
+  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
+  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
+  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</svg></div>
               <div class="app-icon-name">Through Chun Chun's Lens</div>
             </div>
           </div>
@@ -3202,7 +3537,20 @@
     <footer class="site-footer">
       <div class="footer-inner">
         <div>
-          <p class="footer-brand">Through Chun Chun's Lens</p>
+          <div class="footer-brand"><span class="brand-lockup"><svg class="brand-symbol" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="brandStroke" x1="18" y1="12" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23423d"/>
+      <stop offset="0.55" stop-color="#6d837a"/>
+      <stop offset="1" stop-color="#d8b98a"/>
+    </linearGradient>
+  </defs>
+  <path d="M89.5 17.5A46 46 0 1 0 103 52.5" fill="none" stroke="url(#brandStroke)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M18 77c18-19 33-22 48-9 11 10 18 19 30 13 7-3 10-10 7-16-3-6-11-6-16-1-7 7-8 20-2 31" fill="none" stroke="url(#brandStroke)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M95 10.5c1.8 8.2 4.8 11.2 13 13-8.2 1.8-11.2 4.8-13 13-1.8-8.2-4.8-11.2-13-13 8.2-1.8 11.2-4.8 13-13Z" fill="#d8b98a"/>
+  <circle cx="83.5" cy="38" r="1.7" fill="#d8b98a"/>
+  <circle cx="88.5" cy="44" r="1.1" fill="#d8b98a" opacity=".75"/>
+</svg><span class="brand-wordmark">Through Chun Chun's Lens</span></span></div>
           <div
             class="creations-counter loading"
             id="creationsCounter"
