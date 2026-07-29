@@ -3390,6 +3390,37 @@
     @media (prefers-reduced-motion: reduce) { .app-launch-inner { animation:none; } .app-launch-screen { transition:none; } }
 
 </style>
+
+<style id="final-integrated-edition">
+html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img{-webkit-user-drag:none;user-drag:none}
+.hero-button{min-height:60px;padding:0 30px;font-size:15px;box-shadow:0 18px 40px rgba(32,63,58,.18)}
+.brand-section,.team-section{width:min(1180px,calc(100% - 40px));margin:24px auto 88px;padding:76px 0;position:relative}
+.brand-heading,.team-heading{text-align:center;margin-inline:auto}.brand-heading .section-description,.team-heading .section-description{margin-inline:auto}
+.brand-flip{display:block;position:relative;width:min(570px,92vw);aspect-ratio:2/3;margin:44px auto 0;border:0;background:transparent;padding:0;perspective:1800px;cursor:pointer;border-radius:38px}
+.brand-flip-inner{position:absolute;inset:0;display:block;transform-style:preserve-3d;transition:transform 1.05s cubic-bezier(.2,.75,.2,1)}
+.brand-flip.is-flipped .brand-flip-inner{transform:rotateY(180deg)}
+.brand-face{position:absolute;inset:0;display:grid;place-items:center;backface-visibility:hidden;border-radius:38px;overflow:hidden;box-shadow:0 35px 90px rgba(6,28,27,.22),0 0 0 1px rgba(218,185,138,.18)}
+.brand-face img{width:100%;height:100%;object-fit:cover}.brand-back{transform:rotateY(180deg)}
+.brand-flip-icon{position:absolute;right:22px;bottom:22px;z-index:4;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:25px;color:#f1d39f;background:rgba(2,27,28,.72);border:1px solid rgba(241,211,159,.45);backdrop-filter:blur(15px);box-shadow:0 10px 25px rgba(0,0,0,.22);transition:transform .35s ease}
+.brand-flip:hover .brand-flip-icon{transform:rotate(35deg)}.brand-flip-note{text-align:center;margin-top:18px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.58}
+.team-section{padding-top:52px}.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:46px}
+.team-card{position:relative;min-height:580px;border-radius:34px;padding:18px;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(240,246,242,.46));border:1px solid rgba(255,255,255,.88);box-shadow:0 28px 70px rgba(29,55,50,.12);backdrop-filter:blur(24px);transition:transform .45s ease,box-shadow .45s ease}
+.team-card:hover{transform:translateY(-7px);box-shadow:0 38px 88px rgba(29,55,50,.17)}
+.team-portrait{height:330px;border-radius:24px;overflow:hidden;position:relative;background:linear-gradient(145deg,#0b302f,#d8b98a)}.team-photo img{width:100%;height:100%;object-fit:cover;object-position:center 36%}
+.team-card-copy{padding:27px 18px 18px}.team-label{margin:0 0 8px;text-transform:uppercase;letter-spacing:.18em;font-size:11px;color:#8d704a}.team-card h3{font-size:34px;margin:0 0 13px}.team-summary{font-size:15px;line-height:1.75;opacity:.74;margin:0}
+.role-chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}.role-chips span{padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.58);border:1px solid rgba(99,126,117,.16);font-size:12px}
+.ai-portrait{display:flex;align-items:center;justify-content:center;isolation:isolate;background:radial-gradient(circle at 30% 20%,rgba(255,221,164,.62),transparent 26%),linear-gradient(145deg,#062a2a 5%,#174a46 55%,#d0a86f 150%)}
+.ai-halo{position:absolute;width:235px;height:235px;border:1px solid rgba(244,214,161,.72);border-radius:50%;box-shadow:0 0 55px rgba(244,214,161,.22)}
+.ai-face{width:138px;height:138px;border-radius:42px;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(215,229,220,.76));border:1px solid rgba(255,255,255,.8);box-shadow:0 25px 55px rgba(0,0,0,.23);position:relative;display:flex;justify-content:center;gap:34px;padding-top:48px;z-index:2}
+.ai-eye{width:10px;height:12px;border-radius:50%;background:#143d3a}.ai-smile{position:absolute;width:38px;height:18px;border-bottom:3px solid #143d3a;border-radius:0 0 38px 38px;bottom:29px}
+.ai-laptop{position:absolute;bottom:42px;width:190px;height:72px;border-radius:13px 13px 20px 20px;background:rgba(5,25,26,.88);border:1px solid rgba(244,214,161,.5);color:#e9c98f;display:grid;place-items:center;font:600 18px ui-monospace,monospace;z-index:3;box-shadow:0 20px 35px rgba(0,0,0,.3)}
+.role-board{margin-top:26px;border-radius:30px;padding:28px 32px;background:linear-gradient(145deg,rgba(255,255,255,.65),rgba(238,244,240,.45));border:1px solid rgba(255,255,255,.9);box-shadow:0 22px 60px rgba(29,55,50,.1);backdrop-filter:blur(24px)}
+.role-board-title{display:flex;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid rgba(62,92,84,.13);font-size:12px;letter-spacing:.12em;text-transform:uppercase}.role-board-title span:last-child{opacity:.55}.role-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:15px 0;border-bottom:1px solid rgba(62,92,84,.1);font-size:14px}.role-row:last-child{border-bottom:0}.role-row strong{font-weight:600}
+.story-role{font-size:12px;letter-spacing:.08em;color:#8d704a;margin:-4px 0 22px}
+.download-busy{pointer-events:none;opacity:.76}.download-busy svg{animation:downloadPulse .8s ease-in-out infinite alternate}@keyframes downloadPulse{to{transform:translateY(3px)}}
+@media(max-width:760px){.brand-section,.team-section{width:min(100% - 24px,1180px);padding:48px 0;margin-bottom:56px}.team-grid{grid-template-columns:1fr}.team-card{min-height:unset}.team-portrait{height:290px}.role-board{padding:22px 18px}.role-board-title{display:block}.role-board-title span{display:block}.role-board-title span:last-child{margin-top:8px}.role-row{grid-template-columns:1fr;gap:6px}.brand-flip{border-radius:26px}.brand-face{border-radius:26px}.hero-button{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.brand-flip-inner,.team-card,.brand-flip-icon{transition:none!important}}
+</style>
 </head>
 <body>
 <div aria-hidden="true" class="app-launch-screen" id="appLaunchScreen">
@@ -3424,7 +3455,8 @@
 <a href="#works">Featured Works</a>
 <a href="#how">How It Works</a>
 <a href="#studio">Photo Studio</a>
-<a href="#story">The Story</a>
+<a href="#brand">Brand Card</a>
+<a href="#team">Team</a>
 </div>
 </nav>
 <section class="hero-container">
@@ -3441,7 +3473,7 @@
             image, its camera settings, and the feeling behind every frame.
           </p>
 <div class="hero-actions">
-<a class="hero-button" href="#studio">Start Creating →</a>
+<a class="hero-button" href="#studio">Open Photo Studio →</a>
 <span class="hero-note">Private, local, and made for photographers.</span>
 </div>
 </div>
@@ -3596,6 +3628,8 @@
                   隱藏資訊
                 </span>
 </button>
+<button aria-label="重設所有設定" class="toolbar-button" id="resetAllButton" type="button">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24"><path d="M3 12a9 9 0 1 1 3 6.7"></path><path d="M3 17v-5h5"></path></svg><span class="button-label">全部重設</span></button>
 <button aria-label="下載含資訊框的照片" class="toolbar-button" id="downloadButton" type="button">
 <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
 <path d="M12 3v12"></path>
@@ -3670,11 +3704,67 @@
 </div>
 <input accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="hidden-input" id="fileInput" type="file">
 </input></section>
+
+<section aria-labelledby="brandTitle" class="brand-section" id="brand">
+  <div class="section-heading brand-heading">
+    <p class="section-kicker">Official Brand Card</p>
+    <h2 class="section-title" id="brandTitle">One card. Two sides of the story.</h2>
+    <p class="section-description">Click the card to turn it over and discover the QR code behind the brand.</p>
+  </div>
+  <button class="brand-flip" id="brandFlip" type="button" aria-label="翻轉品牌卡片" aria-pressed="false">
+    <span class="brand-flip-inner">
+      <span class="brand-face brand-front"><img src="images/brand-card-front.png" alt="Through Chun Chun's Lens official brand card front" loading="lazy"></span>
+      <span class="brand-face brand-back"><img src="images/brand-card-back.png" alt="Through Chun Chun's Lens official QR card back" loading="lazy"></span>
+    </span>
+    <span class="brand-flip-icon" aria-hidden="true">↻</span>
+  </button>
+  <p class="brand-flip-note">Click to flip</p>
+</section>
+
+<section aria-labelledby="teamTitle" class="team-section" id="team">
+  <div class="section-heading team-heading">
+    <p class="section-kicker">Behind the Website</p>
+    <h2 class="section-title" id="teamTitle">Two partners. One very carefully inspected website.</h2>
+    <p class="section-description">The creative direction and technical build came together one “small change” at a time.</p>
+  </div>
+  <div class="team-grid">
+    <article class="team-card team-card-chun">
+      <div class="team-portrait team-photo"><img src="images/about-chun-chun.jpg" alt="Chun Chun holding a camera beneath pink blossoms" loading="lazy"></div>
+      <div class="team-card-copy">
+        <p class="team-label">Creative Partner</p>
+        <h3>Chun Chun</h3>
+        <p class="team-summary">The eye behind the photographs, the experience, and every detail that somehow still needs checking.</p>
+        <div class="role-chips"><span>👑 Creative Director</span><span>📋 Product Manager</span><span>🎨 UI/UX Designer</span><span>🔍 QA Tester</span></div>
+      </div>
+    </article>
+    <article class="team-card team-card-ai">
+      <div class="team-portrait ai-portrait" aria-label="湊湊的專屬技術夥伴角色">
+        <div class="ai-halo"></div><div class="ai-face"><span class="ai-eye"></span><span class="ai-eye"></span><span class="ai-smile"></span></div><div class="ai-laptop">&lt;/&gt;</div>
+      </div>
+      <div class="team-card-copy">
+        <p class="team-label">Technical Partner</p>
+        <h3>湊湊</h3>
+        <p class="team-summary">I turn “Can this be done?” into working features, then wait patiently for the next tiny adjustment.</p>
+        <div class="role-chips"><span>💻 Frontend Developer</span><span>⚙️ Backend Developer</span><span>🚀 DevOps</span></div>
+      </div>
+    </article>
+  </div>
+  <div class="role-board" aria-label="網站實際分工">
+    <div class="role-board-title"><span>Role distribution</span><span>Team size: 2 · Job titles: somehow 7</span></div>
+    <div class="role-row"><span>👑 Creative Director</span><strong>Chun Chun</strong></div>
+    <div class="role-row"><span>📋 Product Manager</span><strong>Chun Chun（還會抓漏 🤣）</strong></div>
+    <div class="role-row"><span>🎨 UI/UX Designer</span><strong>Chun Chun</strong></div>
+    <div class="role-row"><span>🔍 QA Tester</span><strong>Chun Chun（連 2px 都可能被發現）</strong></div>
+    <div class="role-row"><span>💻 Frontend Developer</span><strong>湊湊</strong></div>
+    <div class="role-row"><span>⚙️ Backend Developer</span><strong>湊湊（目前只有統計 API）</strong></div>
+    <div class="role-row"><span>🚀 DevOps</span><strong>湊湊（陪 PM 部署）</strong></div>
+  </div>
+</section>
 <section aria-labelledby="storyTitle" class="content-section" id="story">
 <div class="story-panel">
 <div aria-label="Chun Chun holding a camera beneath pink blossoms" class="story-mark brand-story-placeholder"><img alt="Chun Chun holding a camera beneath pink blossoms" class="about-photo" decoding="async" loading="lazy" src="images/about-chun-chun.jpg"/></div>
 <div class="story-copy">
-<p class="section-kicker">The Idea Behind</p>
+<p class="section-kicker">The Idea Behind</p><p class="story-role">Chun Chun · Creative Director · Product Manager · UI/UX Designer · QA Tester</p>
 <h2 class="section-title" id="storyTitle">
             It began with a simple wish.
           </h2>
@@ -3816,7 +3906,8 @@
 <a href="#works">Featured Works</a>
 <a href="#how">How It Works</a>
 <a href="#studio">Photo Studio</a>
-<a href="#story">The Story</a>
+<a href="#brand">Brand Card</a>
+<a href="#team">Team</a>
 <a href="#install">Add to Home Screen</a>
 <a href="https://www.instagram.com/chunchunchun0815/" rel="noopener noreferrer" target="_blank">Instagram</a>
 <a href="https://www.youtube.com/@tseng-chun-chun" rel="noopener noreferrer" target="_blank">YouTube</a>
@@ -3829,6 +3920,8 @@
     const chooseButton = document.getElementById("chooseButton");
     const changeButton = document.getElementById("changeButton");
     const downloadButton = document.getElementById("downloadButton");
+    const resetAllButton = document.getElementById("resetAllButton");
+    const brandFlip = document.getElementById("brandFlip");
     const toggleInfoButton = document.getElementById("toggleInfoButton");
     const toggleInfoLabel = document.getElementById("toggleInfoLabel");
     const creationsCounter = document.getElementById("creationsCounter");
@@ -3884,7 +3977,9 @@
 
     chooseButton.addEventListener("click", openFilePicker);
     changeButton.addEventListener("click", openFilePicker);
-    downloadButton.addEventListener("click", downloadOriginalPhoto);
+    downloadButton.addEventListener("click", async () => { downloadButton.classList.add("download-busy"); try { await downloadOriginalPhoto(); } finally { setTimeout(() => downloadButton.classList.remove("download-busy"), 450); } });
+    resetAllButton?.addEventListener("click", () => { setPhotoScale(1); setInfoScale(0.72); signatureInput.value = "Chun Chun"; signatureName.textContent = "— Chun Chun"; if (outputRatio) outputRatio.value = "photo"; updateOutputRatioUI?.(); centerInfoPanel?.(); });
+    brandFlip?.addEventListener("click", () => { const flipped = brandFlip.classList.toggle("is-flipped"); brandFlip.setAttribute("aria-pressed", String(flipped)); });
     toggleInfoButton.addEventListener("click", toggleInfoPanel);
     fileInput.addEventListener("change", handleFileSelection);
 
@@ -4996,6 +5091,11 @@
         }, 700);
       }, { once: true });
     })();
+</script>
+<script>
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('dragstart',e=>{if(e.target.closest('img'))e.preventDefault()});
+document.addEventListener('selectstart',e=>e.preventDefault());
 </script>
 </body>
 </html>
