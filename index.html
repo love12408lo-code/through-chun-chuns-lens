@@ -4818,45 +4818,100 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     }
 
     async function drawInfoPanelOnCanvas(context, stageRect, exportScale) {
-      const panelRect = infoPanel.getBoundingClientRect();
-
       if (typeof html2canvas !== "function") {
         throw new Error("html2canvas unavailable");
       }
 
-      /*
-       * Capture the information card exactly as it is displayed on screen.
-       * The previous off-screen clone was rendered at its unscaled natural size,
-       * which caused the downloaded card to become oversized or nearly blank.
-       * Capturing the real, already-scaled element keeps its size, wrapping,
-       * transparency, border, typography and position consistent with the preview.
-       */
-      const resizeHandleElement = infoPanel.querySelector(".resize-handle");
-      const previousResizeVisibility = resizeHandleElement?.style.visibility || "";
+      const panelRect = infoPanel.getBoundingClientRect();
+      const naturalWidth = Math.max(1, infoPanel.offsetWidth);
+      const naturalHeight = Math.max(1, infoPanel.offsetHeight);
 
-      if (resizeHandleElement) resizeHandleElement.style.visibility = "hidden";
+      /*
+       * The visible card is transformed with CSS scale(). html2canvas is not
+       * reliable when it captures that transformed element directly: at 30%
+       * the contents can disappear, and at larger sizes the card can stretch.
+       *
+       * Render one unscaled clone at its fixed internal size, then place that
+       * bitmap into the export using the visible card's real bounding box.
+       * This keeps typography, wrapping, spacing and every slider size in the
+       * same proportions from 30% through 110%.
+       */
+      const cloneHost = document.createElement("div");
+      cloneHost.setAttribute("aria-hidden", "true");
+      Object.assign(cloneHost.style, {
+        position: "fixed",
+        left: "-100000px",
+        top: "0",
+        width: `${naturalWidth}px`,
+        height: `${naturalHeight}px`,
+        overflow: "visible",
+        pointerEvents: "none",
+        zIndex: "-99999"
+      });
+
+      const clone = infoPanel.cloneNode(true);
+      clone.removeAttribute("id");
+      clone.classList.remove("dragging", "resizing", "hidden");
+      Object.assign(clone.style, {
+        position: "relative",
+        left: "0",
+        top: "0",
+        right: "auto",
+        bottom: "auto",
+        width: `${naturalWidth}px`,
+        minWidth: `${naturalWidth}px`,
+        maxWidth: "none",
+        height: `${naturalHeight}px`,
+        margin: "0",
+        transform: "none",
+        transformOrigin: "top left",
+        opacity: "1",
+        visibility: "visible",
+        cursor: "default",
+        overflow: "hidden",
+        /* Stable original-glass appearance for JPEG/PNG export. */
+        background: "linear-gradient(145deg, rgba(24, 29, 32, 0.48), rgba(10, 14, 17, 0.34))",
+        borderColor: "rgba(255, 255, 255, 0.32)",
+        boxShadow: "0 18px 46px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.16)",
+        webkitBackdropFilter: "none",
+        backdropFilter: "none"
+      });
+      clone.style.setProperty("--info-scale", "1");
+      clone.style.setProperty("--panel-bg", "transparent");
+      clone.style.setProperty("--panel-bg-hover", "transparent");
+      clone.style.setProperty("--panel-border", "rgba(255, 255, 255, 0.32)");
+      clone.style.setProperty("--panel-shadow", "none");
+      clone.style.setProperty("--panel-highlight", "rgba(255, 255, 255, 0.12)");
+      clone.style.setProperty("--panel-text-shadow", "0 1px 3px rgba(0, 0, 0, 0.72)");
+
+      clone.querySelector(".resize-handle")?.remove();
+      cloneHost.appendChild(clone);
+      document.body.appendChild(cloneHost);
 
       try {
+        await document.fonts?.ready;
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-        const panelCanvas = await html2canvas(infoPanel, {
+        const captureScale = Math.max(1.5, exportScale);
+        const panelCanvas = await html2canvas(clone, {
           backgroundColor: null,
-          scale: exportScale,
+          scale: captureScale,
           useCORS: true,
           logging: false,
-          width: panelRect.width,
-          height: panelRect.height,
-          scrollX: -window.scrollX,
-          scrollY: -window.scrollY,
-          windowWidth: document.documentElement.clientWidth,
-          windowHeight: document.documentElement.clientHeight
+          width: naturalWidth,
+          height: naturalHeight,
+          windowWidth: Math.max(document.documentElement.clientWidth, naturalWidth + 40),
+          windowHeight: Math.max(document.documentElement.clientHeight, naturalHeight + 40)
         });
 
         const panelLeft = Math.round((panelRect.left - stageRect.left) * exportScale);
         const panelTop = Math.round((panelRect.top - stageRect.top) * exportScale);
-        const panelWidth = Math.round(panelRect.width * exportScale);
-        const panelHeight = Math.round(panelRect.height * exportScale);
+        const panelWidth = Math.max(1, Math.round(panelRect.width * exportScale));
+        const panelHeight = Math.max(1, Math.round(panelRect.height * exportScale));
 
+        context.save();
+        roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, Math.max(3, 18 * (panelRect.width / naturalWidth) * exportScale));
+        context.clip();
         context.drawImage(
           panelCanvas,
           0,
@@ -4868,8 +4923,9 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
           panelWidth,
           panelHeight
         );
+        context.restore();
       } finally {
-        if (resizeHandleElement) resizeHandleElement.style.visibility = previousResizeVisibility;
+        cloneHost.remove();
       }
     }
 
