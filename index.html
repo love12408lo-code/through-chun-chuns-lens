@@ -4814,8 +4814,8 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
       clone.style.height = `${panelRect.height}px`;
       clone.style.minWidth = "0";
       clone.style.maxWidth = "none";
-      clone.style.transform = getComputedStyle(infoPanel).transform;
-      clone.style.transformOrigin = getComputedStyle(infoPanel).transformOrigin;
+      clone.style.transform = "none";
+clone.style.transformOrigin = "top left";
       clone.style.margin = "0";
       clone.style.cursor = "default";
       clone.style.opacity = "1";
