@@ -3420,6 +3420,58 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
 .download-busy{pointer-events:none;opacity:.76}.download-busy svg{animation:downloadPulse .8s ease-in-out infinite alternate}@keyframes downloadPulse{to{transform:translateY(3px)}}
 @media(max-width:760px){.brand-section,.team-section{width:min(100% - 24px,1180px);padding:48px 0;margin-bottom:56px}.team-grid{grid-template-columns:1fr}.team-card{min-height:unset}.team-portrait{height:290px}.role-board{padding:22px 18px}.role-board-title{display:block}.role-board-title span{display:block}.role-board-title span:last-child{margin-top:8px}.role-row{grid-template-columns:1fr;gap:6px}.brand-flip{border-radius:26px}.brand-face{border-radius:26px}.hero-button{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.brand-flip-inner,.team-card,.brand-flip-icon{transition:none!important}}
+
+/* Photo Studio v2 — wide landscape workspace and compact controls */
+#studio.workspace{
+  width:min(1320px,calc(100vw - 48px));
+  margin-left:50%;
+  transform:translateX(-50%);
+  min-height:0;
+  padding:14px;
+  overflow:hidden;
+}
+#studio .photo-view{min-height:0}
+#studio .photo-stage{
+  min-height:0;
+  border-radius:24px;
+  box-shadow:0 24px 60px rgba(25,52,56,.14);
+}
+#studio .photo-toolbar{top:16px;left:16px;right:16px;gap:10px}
+#studio .toolbar-group{gap:8px}
+#studio .toolbar-button{min-height:40px;padding:0 14px;font-size:12px}
+#studio .studio-controls{
+  top:64px;
+  right:16px;
+  width:min(300px,calc(100% - 32px));
+  padding:12px;
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(19,29,48,.54),rgba(12,18,33,.38));
+  box-shadow:0 18px 46px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.16);
+}
+#studio .control-row + .control-row{margin-top:10px}
+#studio .control-label{margin-bottom:6px;font-size:10px}
+#studio .control-mini-button{min-height:30px;padding:0 10px}
+#studio .signature-input,#studio .ratio-select{min-height:36px}
+#studio .ratio-hint{margin-top:5px;font-size:9px}
+#studio .info-panel{
+  background:linear-gradient(145deg,rgba(21,25,30,.76),rgba(8,12,16,.68))!important;
+  border-color:rgba(255,255,255,.28)!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.12)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(125%)!important;
+  backdrop-filter:blur(18px) saturate(125%)!important;
+}
+#studio .stage-brand-watermark{right:20px;bottom:18px;gap:7px;color:rgba(255,255,255,.48)}
+#studio .stage-brand-watermark .brand-symbol{width:29px;height:29px;opacity:.72}
+#studio .stage-brand-watermark span{font-size:13px}
+@media(max-width:1100px){
+  #studio.workspace{width:100%;margin-left:0;transform:none;padding:12px}
+}
+@media(max-width:720px){
+  #studio.workspace{padding:10px}
+  #studio .photo-toolbar{top:12px;left:12px;right:12px}
+  #studio .studio-controls{top:60px;right:12px;width:min(290px,calc(100% - 24px));padding:11px}
+  #studio .toolbar-button{min-height:38px;width:38px;padding:0}
+}
 </style>
 </head>
 <body>
@@ -3574,9 +3626,9 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
 </div>
 </div>
 <div class="control-row">
-<div class="control-label"><span>Info card size</span><span id="infoScaleValue">72%</span></div>
+<div class="control-label"><span>Info card size</span><span id="infoScaleValue">60%</span></div>
 <div class="zoom-row">
-<input aria-label="資訊卡等比例縮放" class="zoom-slider" id="infoScaleSlider" max="110" min="40" step="1" type="range" value="72"/>
+<input aria-label="資訊卡等比例縮放" class="zoom-slider" id="infoScaleSlider" max="110" min="30" step="1" type="range" value="60"/>
 <button class="control-mini-button" id="resetInfoButton" type="button">重設</button>
 </div>
 </div>
@@ -3966,7 +4018,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     let photoScale = 1;
     let originalImageWidth = 3;
     let originalImageHeight = 2;
-    let infoScale = 0.72;
+    let infoScale = 0.60;
     let photoX = 0;
     let photoY = 0;
     let photoDragging = false;
@@ -3978,7 +4030,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     chooseButton.addEventListener("click", openFilePicker);
     changeButton.addEventListener("click", openFilePicker);
     downloadButton.addEventListener("click", async () => { downloadButton.classList.add("download-busy"); try { await downloadOriginalPhoto(); } finally { setTimeout(() => downloadButton.classList.remove("download-busy"), 450); } });
-    resetAllButton?.addEventListener("click", () => { setPhotoScale(1); setInfoScale(0.72); signatureInput.value = "Chun Chun"; signatureName.textContent = "— Chun Chun"; if (outputRatio) outputRatio.value = "photo"; updateOutputRatioUI?.(); centerInfoPanel?.(); });
+    resetAllButton?.addEventListener("click", () => { setPhotoScale(1); setInfoScale(0.60); signatureInput.value = "Chun Chun"; signatureName.textContent = "— Chun Chun"; if (outputRatio) outputRatio.value = "photo"; updateOutputRatioUI?.(); centerInfoPanel?.(); });
     brandFlip?.addEventListener("click", () => { const flipped = brandFlip.classList.toggle("is-flipped"); brandFlip.setAttribute("aria-pressed", String(flipped)); });
     toggleInfoButton.addEventListener("click", toggleInfoPanel);
     fileInput.addEventListener("change", handleFileSelection);
@@ -3989,7 +4041,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
     // 照片只由上方縮放滑桿控制，避免移動資訊卡時誤觸照片。
     infoScaleSlider.addEventListener("input", () => setInfoScale(Number(infoScaleSlider.value) / 100));
-    resetInfoButton.addEventListener("click", () => setInfoScale(0.72));
+    resetInfoButton.addEventListener("click", () => setInfoScale(0.60));
     outputRatio.addEventListener("change", () => {
       applyOutputRatio();
     });
@@ -4410,12 +4462,12 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     }
 
     function setInfoScale(nextScale) {
-      infoScale = Math.min(1.10, Math.max(0.40, nextScale));
+      infoScale = Math.min(1.10, Math.max(0.30, nextScale));
       applyInfoPanelScale();
     }
 
     function resetInfoPanelScale() {
-      setInfoScale(0.72);
+      setInfoScale(0.60);
     }
 
     function fitInfoPanelToStage({ onlyShrink = true } = {}) {
@@ -4425,7 +4477,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
       const naturalWidth = 640;
       const fittedScale = Math.min(1.10, safeWidth / naturalWidth);
       if (!onlyShrink || infoScale > fittedScale) {
-        infoScale = Math.max(0.40, fittedScale);
+        infoScale = Math.max(0.30, fittedScale);
         applyInfoPanelScale();
       }
     }
