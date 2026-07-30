@@ -4710,7 +4710,20 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
         const originalName = currentFile.name.replace(/\.[^.]+$/, "") || "photograph";
         const ratioSuffix = outputRatio?.value === "photo" ? `-${readableRatio(originalImageWidth, originalImageHeight).replace(":", "x")}` : `-${outputRatio.value.replace(":", "x")}`;
         const blob = await new Promise((resolve, reject) => canvas.toBlob(result => result ? resolve(result) : reject(new Error("Export failed")), mimeType, 0.95));
-        const exportUrl = URL.createObjectURL(blob);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    if (isIOS) {
+      const dataUrl = canvas.toDataURL(mimeType, 0.95);
+      const w = window.open(dataUrl, "_blank");
+      if (!w) {
+        window.location.href = dataUrl;
+      }
+      incrementCreationsCount?.();
+      return;
+    }
+
+    const exportUrl = URL.createObjectURL(blob);
         const downloadLink = document.createElement("a");
         downloadLink.href = exportUrl; downloadLink.download = `${originalName}-with-info${ratioSuffix}.${extension}`;
         document.body.appendChild(downloadLink); downloadLink.click(); downloadLink.remove();
