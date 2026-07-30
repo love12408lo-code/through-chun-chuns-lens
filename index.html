@@ -4825,83 +4825,51 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
       }
 
       /*
-       * Export an off-screen clone of the real information card.
-       * This preserves the browser's exact:
-       * - font sizing
-       * - wrapping
-       * - line spacing
-       * - signature position
-       * - selected material
-       *
-       * It replaces the previous manual re-drawing method, which could never
-       * perfectly match the visible card after resizing.
+       * Capture the information card exactly as it is displayed on screen.
+       * The previous off-screen clone was rendered at its unscaled natural size,
+       * which caused the downloaded card to become oversized or nearly blank.
+       * Capturing the real, already-scaled element keeps its size, wrapping,
+       * transparency, border, typography and position consistent with the preview.
        */
-      const cloneHost = document.createElement("div");
-      cloneHost.setAttribute("aria-hidden", "true");
-      cloneHost.style.position = "fixed";
-      cloneHost.style.left = "-100000px";
-      cloneHost.style.top = "0";
-      const naturalWidth = Math.max(1, infoPanel.offsetWidth);
-      const naturalHeight = Math.max(1, infoPanel.offsetHeight);
+      const resizeHandleElement = infoPanel.querySelector(".resize-handle");
+      const previousResizeVisibility = resizeHandleElement?.style.visibility || "";
 
-      cloneHost.style.width = `${naturalWidth}px`;
-      cloneHost.style.height = `${naturalHeight}px`;
-      cloneHost.style.pointerEvents = "none";
-      cloneHost.style.zIndex = "-99999";
-      cloneHost.style.overflow = "visible";
-
-      const clone = infoPanel.cloneNode(true);
-      clone.classList.remove("dragging", "resizing", "hidden");
-      clone.style.position = "relative";
-      clone.style.left = "0";
-      clone.style.top = "0";
-      clone.style.right = "auto";
-      clone.style.bottom = "auto";
-      clone.style.width = `${naturalWidth}px`;
-      clone.style.height = `${naturalHeight}px`;
-      clone.style.minWidth = "0";
-      clone.style.maxWidth = "none";
-      clone.style.transform = "none";
-      clone.style.transformOrigin = "top left";
-      clone.style.margin = "0";
-      clone.style.cursor = "default";
-      clone.style.opacity = "1";
-
-      // Exported artwork should not include editing handles.
-      clone.querySelector(".resize-handle")?.remove();
-
-      cloneHost.appendChild(clone);
-      document.body.appendChild(cloneHost);
+      if (resizeHandleElement) resizeHandleElement.style.visibility = "hidden";
 
       try {
-        // Wait for the browser to finish laying out the clone.
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-        const panelCanvas = await html2canvas(clone, {
+        const panelCanvas = await html2canvas(infoPanel, {
           backgroundColor: null,
           scale: exportScale,
           useCORS: true,
           logging: false,
-          width: naturalWidth,
-          height: naturalHeight,
+          width: panelRect.width,
+          height: panelRect.height,
+          scrollX: -window.scrollX,
+          scrollY: -window.scrollY,
           windowWidth: document.documentElement.clientWidth,
           windowHeight: document.documentElement.clientHeight
         });
 
-        const panelLeft = (panelRect.left - stageRect.left) * exportScale;
-        const panelTop = (panelRect.top - stageRect.top) * exportScale;
-        const panelWidth = panelRect.width * exportScale;
-        const panelHeight = panelRect.height * exportScale;
+        const panelLeft = Math.round((panelRect.left - stageRect.left) * exportScale);
+        const panelTop = Math.round((panelRect.top - stageRect.top) * exportScale);
+        const panelWidth = Math.round(panelRect.width * exportScale);
+        const panelHeight = Math.round(panelRect.height * exportScale);
 
         context.drawImage(
           panelCanvas,
+          0,
+          0,
+          panelCanvas.width,
+          panelCanvas.height,
           panelLeft,
           panelTop,
           panelWidth,
           panelHeight
         );
       } finally {
-        cloneHost.remove();
+        if (resizeHandleElement) resizeHandleElement.style.visibility = previousResizeVisibility;
       }
     }
 
