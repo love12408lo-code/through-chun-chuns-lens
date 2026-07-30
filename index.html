@@ -3107,27 +3107,27 @@
     .photo-preview {
       cursor: default !important;
       pointer-events: none !important;
-      touch-action: auto !important;
+      min-width: var(--card-width) !important;
     }
 
     .info-panel {
-      --card-scale: .72;
-      --card-width: 461px;
-      --card-pad-y: 16px;
-      --card-pad-x: 20px;
-      --card-pad-bottom: 18px;
-      --card-radius: 14px;
-      --handle-width: 27px;
-      --handle-height: 3px;
-      --handle-margin: 11px;
-      --stack-gap: 6px;
-      --camera-font: 14px;
-      --detail-font: 12px;
-      --signature-font: 9px;
-      --signature-margin: 9px;
-      --signature-padding: 9px;
+      --card-scale: 1;
+--card-width: 640px;
+--card-pad-y: 22px;
+--card-pad-x: 28px;
+--card-pad-bottom: 25px;
+--card-radius: 20px;
+--handle-width: 38px;
+--handle-height: 4px;
+--handle-margin: 15px;
+--stack-gap: 8px;
+--camera-font: 20px;
+--detail-font: 16px;
+--signature-font: 12px;
+--signature-margin: 13px;
+--signature-padding: 12px;
       width: var(--card-width) !important;
-      min-width: 0 !important;
+      min-width: var(--card-width) !important;
       max-width: none !important;
       padding: var(--card-pad-y) var(--card-pad-x) var(--card-pad-bottom) !important;
       border-radius: var(--card-radius) !important;
@@ -3137,9 +3137,8 @@
     }
 
     .info-panel.hidden {
-      transform: translateY(10px) !important;
-    }
-
+    transform: translateY(10px) scale(var(--info-scale)) !important;
+}
     .info-panel .drag-handle {
       width: var(--handle-width);
       height: var(--handle-height);
@@ -4387,27 +4386,23 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     }
 
     function applyInfoPanelScale() {
-      const px = (value, minimum = 0) => `${Math.max(minimum, Math.round(value * infoScale * 10) / 10)}px`;
-      infoPanel.style.setProperty("--card-scale", infoScale);
-      infoPanel.style.setProperty("--card-width", px(640, 256));
-      infoPanel.style.setProperty("--card-pad-y", px(22, 9));
-      infoPanel.style.setProperty("--card-pad-x", px(28, 11));
-      infoPanel.style.setProperty("--card-pad-bottom", px(25, 10));
-      infoPanel.style.setProperty("--card-radius", px(20, 8));
-      infoPanel.style.setProperty("--handle-width", px(38, 15));
-      infoPanel.style.setProperty("--handle-height", px(4, 2));
-      infoPanel.style.setProperty("--handle-margin", px(15, 6));
-      infoPanel.style.setProperty("--stack-gap", px(8, 3));
-      infoPanel.style.setProperty("--camera-font", px(20, 8));
-      infoPanel.style.setProperty("--detail-font", px(16, 7));
-      infoPanel.style.setProperty("--signature-font", px(12, 6));
-      infoPanel.style.setProperty("--signature-margin", px(13, 5));
-      infoPanel.style.setProperty("--signature-padding", px(12, 5));
-      infoPanel.setAttribute("data-scale", `${Math.round(infoScale * 100)}%`);
-      if (infoScaleSlider) infoScaleSlider.value = String(Math.round(infoScale * 100));
-      if (infoScaleValue) infoScaleValue.textContent = `${Math.round(infoScale * 100)}%`;
-      keepInfoPanelInsideStage();
-    }
+  infoPanel.style.setProperty("--info-scale", infoScale);
+
+  infoPanel.setAttribute(
+    "data-scale",
+    `${Math.round(infoScale * 100)}%`
+  );
+
+  if (infoScaleSlider) {
+    infoScaleSlider.value = String(Math.round(infoScale * 100));
+  }
+
+  if (infoScaleValue) {
+    infoScaleValue.textContent = `${Math.round(infoScale * 100)}%`;
+  }
+
+  keepInfoPanelInsideStage();
+}
 
     function setInfoScale(nextScale) {
       infoScale = Math.min(1.10, Math.max(0.40, nextScale));
