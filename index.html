@@ -3421,57 +3421,62 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
 @media(max-width:760px){.brand-section,.team-section{width:min(100% - 24px,1180px);padding:48px 0;margin-bottom:56px}.team-grid{grid-template-columns:1fr}.team-card{min-height:unset}.team-portrait{height:290px}.role-board{padding:22px 18px}.role-board-title{display:block}.role-board-title span{display:block}.role-board-title span:last-child{margin-top:8px}.role-row{grid-template-columns:1fr;gap:6px}.brand-flip{border-radius:26px}.brand-face{border-radius:26px}.hero-button{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.brand-flip-inner,.team-card,.brand-flip-icon{transition:none!important}}
 
-/* Photo Studio v2 — wide landscape workspace and compact controls */
-#studio.workspace{
-  width:min(1320px,calc(100vw - 48px));
-  margin-left:50%;
-  transform:translateX(-50%);
-  min-height:0;
-  padding:14px;
-  overflow:hidden;
-}
-#studio .photo-view{min-height:0}
-#studio .photo-stage{
-  min-height:0;
-  border-radius:24px;
-  box-shadow:0 24px 60px rgba(25,52,56,.14);
-}
-#studio .photo-toolbar{top:16px;left:16px;right:16px;gap:10px}
-#studio .toolbar-group{gap:8px}
-#studio .toolbar-button{min-height:40px;padding:0 14px;font-size:12px}
-#studio .studio-controls{
-  top:64px;
-  right:16px;
-  width:min(300px,calc(100% - 32px));
-  padding:12px;
-  border-radius:18px;
-  background:linear-gradient(145deg,rgba(19,29,48,.54),rgba(12,18,33,.38));
-  box-shadow:0 18px 46px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.16);
-}
-#studio .control-row + .control-row{margin-top:10px}
-#studio .control-label{margin-bottom:6px;font-size:10px}
-#studio .control-mini-button{min-height:30px;padding:0 10px}
-#studio .signature-input,#studio .ratio-select{min-height:36px}
-#studio .ratio-hint{margin-top:5px;font-size:9px}
-#studio .info-panel{
-  background:linear-gradient(145deg,rgba(21,25,30,.76),rgba(8,12,16,.68))!important;
-  border-color:rgba(255,255,255,.28)!important;
-  box-shadow:0 18px 42px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.12)!important;
-  -webkit-backdrop-filter:blur(18px) saturate(125%)!important;
-  backdrop-filter:blur(18px) saturate(125%)!important;
-}
-#studio .stage-brand-watermark{right:20px;bottom:18px;gap:7px;color:rgba(255,255,255,.48)}
-#studio .stage-brand-watermark .brand-symbol{width:29px;height:29px;opacity:.72}
-#studio .stage-brand-watermark span{font-size:13px}
-@media(max-width:1100px){
-  #studio.workspace{width:100%;margin-left:0;transform:none;padding:12px}
-}
-@media(max-width:720px){
-  #studio.workspace{padding:10px}
-  #studio .photo-toolbar{top:12px;left:12px;right:12px}
-  #studio .studio-controls{top:60px;right:12px;width:min(290px,calc(100% - 24px));padding:11px}
-  #studio .toolbar-button{min-height:38px;width:38px;padding:0}
-}
+
+    /* Studio final fix — true proportional card scaling and export-safe glass */
+    .info-panel {
+      --info-scale: .60;
+      width: 640px !important;
+      min-width: 640px !important;
+      max-width: none !important;
+      padding: 22px 28px 25px !important;
+      border-radius: 20px !important;
+      overflow: hidden !important;
+      transform: scale(var(--info-scale)) !important;
+      transform-origin: left bottom !important;
+      background: linear-gradient(145deg, rgba(28, 34, 40, .46), rgba(16, 21, 27, .40)) !important;
+      border-color: rgba(255, 255, 255, .30) !important;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255,255,255,.13) !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .info-panel.hidden {
+      transform: translateY(10px) scale(var(--info-scale)) !important;
+    }
+
+    .info-panel .drag-handle {
+      width: 38px !important;
+      height: 4px !important;
+      margin: 0 auto 15px !important;
+    }
+
+    .info-panel .metadata-stack { gap: 8px !important; }
+
+    .info-panel .metadata-line,
+    .info-panel .camera-line,
+    .info-panel .secondary-line,
+    .info-panel .settings-line,
+    .info-panel .signature-name {
+      width: 100% !important;
+      max-width: 100% !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      overflow-wrap: normal !important;
+      word-break: normal !important;
+    }
+
+    .info-panel .camera-line { font-size: 20px !important; line-height: 1.35 !important; }
+    .info-panel .secondary-line,
+    .info-panel .settings-line { font-size: 16px !important; line-height: 1.48 !important; }
+    .info-panel .signature { margin-top: 13px !important; padding-top: 12px !important; }
+    .info-panel .signature-name { font-size: 12px !important; line-height: 1.4 !important; }
+
+    @media (max-width: 720px) {
+      .info-panel {
+        width: 640px !important;
+        min-width: 640px !important;
+      }
+    }
 </style>
 </head>
 <body>
@@ -3626,7 +3631,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
 </div>
 </div>
 <div class="control-row">
-<div class="control-label"><span>Info card size</span><span id="infoScaleValue">60%</span></div>
+<div class="control-label"><span>Info card size</span><span id="infoScaleValue">72%</span></div>
 <div class="zoom-row">
 <input aria-label="資訊卡等比例縮放" class="zoom-slider" id="infoScaleSlider" max="110" min="30" step="1" type="range" value="60"/>
 <button class="control-mini-button" id="resetInfoButton" type="button">重設</button>
@@ -4041,7 +4046,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     resetPhotoButton.addEventListener("click", resetPhotoTransform);
     // 照片只由上方縮放滑桿控制，避免移動資訊卡時誤觸照片。
     infoScaleSlider.addEventListener("input", () => setInfoScale(Number(infoScaleSlider.value) / 100));
-    resetInfoButton.addEventListener("click", () => setInfoScale(0.60));
+    resetInfoButton.addEventListener("click", () => setInfoScale(0.72));
     outputRatio.addEventListener("change", () => {
       applyOutputRatio();
     });
@@ -4439,22 +4444,7 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
     }
 
     function applyInfoPanelScale() {
-      const px = (value, minimum = 0) => `${Math.max(minimum, Math.round(value * infoScale * 10) / 10)}px`;
-      infoPanel.style.setProperty("--card-scale", infoScale);
-      infoPanel.style.setProperty("--card-width", px(640, 256));
-      infoPanel.style.setProperty("--card-pad-y", px(22, 9));
-      infoPanel.style.setProperty("--card-pad-x", px(28, 11));
-      infoPanel.style.setProperty("--card-pad-bottom", px(25, 10));
-      infoPanel.style.setProperty("--card-radius", px(20, 8));
-      infoPanel.style.setProperty("--handle-width", px(38, 15));
-      infoPanel.style.setProperty("--handle-height", px(4, 2));
-      infoPanel.style.setProperty("--handle-margin", px(15, 6));
-      infoPanel.style.setProperty("--stack-gap", px(8, 3));
-      infoPanel.style.setProperty("--camera-font", px(20, 8));
-      infoPanel.style.setProperty("--detail-font", px(16, 7));
-      infoPanel.style.setProperty("--signature-font", px(12, 6));
-      infoPanel.style.setProperty("--signature-margin", px(13, 5));
-      infoPanel.style.setProperty("--signature-padding", px(12, 5));
+      infoPanel.style.setProperty("--info-scale", String(infoScale));
       infoPanel.setAttribute("data-scale", `${Math.round(infoScale * 100)}%`);
       if (infoScaleSlider) infoScaleSlider.value = String(Math.round(infoScale * 100));
       if (infoScaleValue) infoScaleValue.textContent = `${Math.round(infoScale * 100)}%`;
