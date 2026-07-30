@@ -4869,19 +4869,19 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
         visibility: "visible",
         cursor: "default",
         overflow: "hidden",
-        /* Stable original-glass appearance for JPEG/PNG export. */
-        background: "linear-gradient(145deg, rgba(24, 29, 32, 0.48), rgba(10, 14, 17, 0.34))",
-        borderColor: "rgba(255, 255, 255, 0.32)",
-        boxShadow: "0 18px 46px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.16)",
+        /* The glass background is recreated from the exported photo below. */
+        background: "transparent",
+        borderColor: "transparent",
+        boxShadow: "none",
         webkitBackdropFilter: "none",
         backdropFilter: "none"
       });
       clone.style.setProperty("--info-scale", "1");
       clone.style.setProperty("--panel-bg", "transparent");
       clone.style.setProperty("--panel-bg-hover", "transparent");
-      clone.style.setProperty("--panel-border", "rgba(255, 255, 255, 0.32)");
+      clone.style.setProperty("--panel-border", "transparent");
       clone.style.setProperty("--panel-shadow", "none");
-      clone.style.setProperty("--panel-highlight", "rgba(255, 255, 255, 0.12)");
+      clone.style.setProperty("--panel-highlight", "rgba(255, 255, 255, 0.08)");
       clone.style.setProperty("--panel-text-shadow", "0 1px 3px rgba(0, 0, 0, 0.72)");
 
       clone.querySelector(".resize-handle")?.remove();
@@ -4909,9 +4909,58 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
         const panelWidth = Math.max(1, Math.round(panelRect.width * exportScale));
         const panelHeight = Math.max(1, Math.round(panelRect.height * exportScale));
 
+        const panelRadius = Math.max(3, 18 * (panelRect.width / naturalWidth) * exportScale);
+
+        /* Rebuild real frosted glass from the already-rendered photograph. */
+        const blurPadding = Math.max(12, Math.round(18 * exportScale));
+        const sourceLeft = Math.max(0, panelLeft - blurPadding);
+        const sourceTop = Math.max(0, panelTop - blurPadding);
+        const sourceRight = Math.min(context.canvas.width, panelLeft + panelWidth + blurPadding);
+        const sourceBottom = Math.min(context.canvas.height, panelTop + panelHeight + blurPadding);
+        const sourceWidth = Math.max(1, sourceRight - sourceLeft);
+        const sourceHeight = Math.max(1, sourceBottom - sourceTop);
+
+        const backdropCanvas = document.createElement("canvas");
+        backdropCanvas.width = sourceWidth;
+        backdropCanvas.height = sourceHeight;
+        const backdropContext = backdropCanvas.getContext("2d");
+        backdropContext.drawImage(
+          context.canvas,
+          sourceLeft,
+          sourceTop,
+          sourceWidth,
+          sourceHeight,
+          0,
+          0,
+          sourceWidth,
+          sourceHeight
+        );
+
         context.save();
-        roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, Math.max(3, 18 * (panelRect.width / naturalWidth) * exportScale));
+        roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, panelRadius);
         context.clip();
+
+        context.filter = `blur(${Math.max(2, 7 * exportScale)}px) saturate(118%)`;
+        context.drawImage(
+          backdropCanvas,
+          panelLeft - sourceLeft,
+          panelTop - sourceTop,
+          panelWidth,
+          panelHeight,
+          panelLeft,
+          panelTop,
+          panelWidth,
+          panelHeight
+        );
+        context.filter = "none";
+
+        const glassGradient = context.createLinearGradient(panelLeft, panelTop, panelLeft + panelWidth, panelTop + panelHeight);
+        glassGradient.addColorStop(0, "rgba(255, 255, 255, 0.11)");
+        glassGradient.addColorStop(0.42, "rgba(18, 23, 27, 0.18)");
+        glassGradient.addColorStop(1, "rgba(5, 9, 12, 0.24)");
+        context.fillStyle = glassGradient;
+        context.fillRect(panelLeft, panelTop, panelWidth, panelHeight);
+
         context.drawImage(
           panelCanvas,
           0,
@@ -4923,6 +4972,13 @@ html{scroll-behavior:smooth} body{-webkit-user-select:none;user-select:none} img
           panelWidth,
           panelHeight
         );
+        context.restore();
+
+        context.save();
+        roundedRect(context, panelLeft, panelTop, panelWidth, panelHeight, panelRadius);
+        context.strokeStyle = "rgba(255, 255, 255, 0.28)";
+        context.lineWidth = Math.max(1, 0.8 * exportScale);
+        context.stroke();
         context.restore();
       } finally {
         cloneHost.remove();
